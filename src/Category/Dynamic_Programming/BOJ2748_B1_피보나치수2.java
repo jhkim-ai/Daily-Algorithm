@@ -1,7 +1,9 @@
-import java.io.*;
-import java.util.*;
+package Category.Dynamic_Programming;
 
-public class exercise {
+import java.util.*;
+import java.io.*;
+
+public class BOJ2748_B1_피보나치수2 {
 
     static int N;
     static long[] dp; // Memoization
@@ -42,7 +44,7 @@ public class exercise {
         dp = new long[N+1];
         dp[0] = 0;
         dp[1] = 1;
-        
+
         // (2) -1 fibo 함수를 이용한 재귀
         System.out.println(fibo(N));
     }
@@ -54,5 +56,4 @@ public class exercise {
             dp[n] = fibo(n-1) + fibo(n-2);
         return dp[n];
     }
-    static String input = "16";
 }

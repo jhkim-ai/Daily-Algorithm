@@ -32,13 +32,13 @@ public class BOJ1205_S4_등수구하기 {
 
             // 하나씩 비교하며 rank 및 카운트 증가
             for (int i = 0; i < N; i++) {
-                // 값보다 클 경우 ranking 정착
+                // N이 현재 값보다 클 경우 현재 값 앞의 ranking 으로 책정
                 if (S > arr[i]) {
                     break;
-                // 값이 같다면, cnt만 증가
+                // N이 현재 값과 같다면, cnt 만 증가
                 } else if (S == arr[i]) {
                     cnt++;
-                // 값이 작다면, ranking과 카운트를 동시에 증가
+                // N이 현재 값보다 작다면, ranking 과 카운트를 동시에 증가
                 } else {
                     cnt++;
                     rank++;
@@ -49,7 +49,8 @@ public class BOJ1205_S4_등수구하기 {
             else
                 System.out.println(-1);
         }
-        // N == 0
+        // 주의! 문제에 N = 0일 수 있다.
+        // N = 0
         else {
             System.out.println(1);
         }
