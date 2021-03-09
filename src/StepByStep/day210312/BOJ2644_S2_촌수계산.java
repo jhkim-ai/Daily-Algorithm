@@ -35,7 +35,7 @@ public class BOJ2644_S2_촌수계산 {
             list[a].add(b);
             list[b].add(a);
         }
-        
+
         // 최단 거리를 찾는 것과 비슷하다 생각하여 bfs 구현
         int ans = bfs(start);
         System.out.println(ans);
@@ -50,7 +50,8 @@ public class BOJ2644_S2_촌수계산 {
 
         while (!q.isEmpty()) {
             // 현재 연결된 노드의 수만큼 진행 후, Count 를 증가하기 위한 for 문
-            for (int i = 0; i < q.size(); i++) {
+            int t = q.size(); // 주의! q.size()가 계속 변동되기 때문에, 고정값을 정한 후 for 문을 돌려야함
+            for (int i = 0; i < t; i++) {
                 int n = q.poll();
                 // 탐색 완료 시, return
                 if (n == end)
@@ -70,7 +71,7 @@ public class BOJ2644_S2_촌수계산 {
     }
 
     static String input = "9\n" +
-            "7 3\n" +
+            "7 4\n" +
             "7\n" +
             "1 2\n" +
             "1 3\n" +
