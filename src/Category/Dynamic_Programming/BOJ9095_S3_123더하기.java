@@ -3,7 +3,7 @@ package Category.Dynamic_Programming;
 import java.util.*;
 import java.io.*;
 
-public class Baekjoon9095_S3_123더하기 {
+public class BOJ9095_S3_123더하기 {
 
     static int T, N;
     static int[] dp = new int[11];
