@@ -14,5 +14,6 @@ public class sample {
             System.out.println("CK");
         else
             System.out.println("SK");
-    }
+        // test
+}
 }

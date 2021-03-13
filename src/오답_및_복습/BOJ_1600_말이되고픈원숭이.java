@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
+// 조만기 풀이
 public class BOJ_1600_말이되고픈원숭이 {
 
 	static class INFO{

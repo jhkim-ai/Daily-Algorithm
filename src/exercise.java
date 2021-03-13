@@ -43,7 +43,7 @@ public class exercise {
         dp[0] = 0;
         dp[1] = 1;
         
-        // (2) -1 fibo 함수를 이용한 재귀
+        // (2) -1 fibonacci 함수를 이용한 재귀
         System.out.println(fibo(N));
     }
     // (2) - 2 재귀적 dp 접근
