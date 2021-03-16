@@ -3,23 +3,51 @@ import java.util.*;
 
 public class sample {
 
-    static String str;
-    static StringBuilder sb = new StringBuilder();
-    static int[] arr = {1,2,3,4,5,6};
+    static int N;
+    static List<String> arr;
+    static Set<String> s = new HashSet<>();
 
     public static void main(String[] args) throws Exception {
-        comb(4, new int[4], 0);
-    }
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new StringReader(input));
 
-    static void comb(int cnt, int[] selected, int startIdx){
-        if(cnt == 0){
-            System.out.println(Arrays.toString(selected));
-            return;
+        N = Integer.parseInt(br.readLine());
+        arr = new ArrayList<>();
+
+        for (int i = 0; i < N; i++) {
+            s.add(br.readLine());
+        }
+        for (String str : s){
+            arr.add(str);
         }
 
-        for (int i = startIdx; i < arr.length; i++) {
-            selected[selected.length - cnt] = arr[i];
-            comb(cnt-1, selected, i+1);
-        }
+        Collections.sort(arr, new Comparator<String>(){
+            @Override
+            public int compare(String s1, String s2){
+                if(s1.length() == s2.length()){
+                    return s1.compareTo(s2);
+                }
+                return s1.length()-s2.length();
+            }
+        });
+        StringBuilder sb = new StringBuilder();
+        for(String str : arr)
+            sb.append(str).append("\n");
+        System.out.println(sb);
     }
+
+    static String input = "13\n" +
+            "but\n" +
+            "i\n" +
+            "wont\n" +
+            "hesitate\n" +
+            "no\n" +
+            "more\n" +
+            "no\n" +
+            "more\n" +
+            "it\n" +
+            "cannot\n" +
+            "wait\n" +
+            "im\n" +
+            "yours";
 }
