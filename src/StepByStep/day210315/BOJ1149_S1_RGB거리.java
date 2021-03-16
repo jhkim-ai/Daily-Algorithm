@@ -1,7 +1,8 @@
-package Category.Dynamic_Programming;
+package StepByStep.day210315;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.util.StringTokenizer;
 
 public class BOJ1149_S1_RGB거리 {
 
