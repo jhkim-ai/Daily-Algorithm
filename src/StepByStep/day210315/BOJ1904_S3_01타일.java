@@ -20,7 +20,7 @@ public class BOJ1904_S3_01타일 {
             dp[i] = (dp[i-1] + dp[i-2])%15746;
         }
 
-        System.out.println(dp[N]);
+        System.out.println(dp[111]);
     }
 
     static String input = "4";
