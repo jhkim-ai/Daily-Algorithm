@@ -36,16 +36,13 @@ public class BOJ2156_S1_포도주시식 {
             // (2). xoo : 1번째 전의 포도주
             int first_ago = arr[i-1] + dp[i-3];
             // (3). oox : 현재 포도주를 제외한 첫 번째 전과 두 번째 전
-
+            int zero = dp[i-1];
             // (1)번과 (2)번 중 최댓값을 선택 후, dp[i]에 저장
-            dp[i] = Math.max(first_ago, second_ago) + arr[i];
-
-            // 정답 Check! (최댓값을 찾아야 하기에 매번 비교한다)
-            ans = Math.max(dp[i], ans);
+            dp[i] = Math.max(Math.max(first_ago, second_ago) + arr[i], zero);
         }
 
         // --------- 출력 --------- //
-        System.out.println(ans);
+        System.out.println(dp[N]);
     }
 
     static String input = "6\n" +
