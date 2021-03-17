@@ -1,4 +1,4 @@
-package Binomial_theorem;
+package Category.Binomial_theorem;
 
 import java.io.*;
 import java.util.*;
