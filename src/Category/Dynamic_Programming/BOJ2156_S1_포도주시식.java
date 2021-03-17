@@ -33,7 +33,7 @@ public class BOJ2156_S1_포도주시식 {
         for (int i = 3; i < N+1 ; i++) {
             // (1). oxo : 2번째 전의 포도주
             int second_ago = dp[i-2];
-            // (2). xoo : 1번째 전의 포도주
+            // (2). oxoo : 1번째 전의 포도주
             int first_ago = arr[i-1] + dp[i-3];
             // (3). oox : 현재 포도주를 제외한 첫 번째 전과 두 번째 전
             int zero = dp[i-1];
