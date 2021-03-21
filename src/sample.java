@@ -3,67 +3,80 @@ import java.util.*;
 
 public class sample {
 
-    static int N, ans;
-    static int[][] map;
     public static void main(String[] args) throws Exception {
 //        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedReader br = new BufferedReader(new StringReader(input));
-        StringTokenizer st = null;
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        Set<Integer> s = new HashSet<>();
 
-        ans = Integer.MAX_VALUE;
-        N = Integer.parseInt(br.readLine());
-        map = new int[N+1][N+1];
-        for (int i = 1; i < N+1; i++) {
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        int[] root = new int[N+1];
+        int[] rank = new int[N+1];
+
+        // 1. 초기화
+        makeSet(root, N);
+
+        // 2. union
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine(), " ");
-            for (int j = 1; j < N+1; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-            }
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+
+            union(a, b, root, rank);
         }
-        comb(N/2, new int[N/2], 1);
-        System.out.println(ans);
+
+        // 3. 출력(종교의 개수)
+        for (int i = 1; i < root.length; i++) {
+            s.add(root[i]);
+        }
+        System.out.println(s.size());
     }
 
-    static void comb(int cnt, int[] selected, int startIdx){
-        if(cnt == 0){
-            List<Integer> list = new ArrayList<>();
-            boolean isIn;
-
-            for (int i = 1; i <N+1 ; i++) {
-                isIn = false;
-                for (int j = 0; j < selected.length; j++) {
-                    if(i == selected[j]) {
-                        isIn = true;
-                        break;
-                    }
-                }
-                if(!isIn)
-                    list.add(i);
-            }
-            int start = 0;
-            int link = 0;
-            for (int i = 0; i < N/2 -1; i++) {
-                for (int j = i+1; j < N/2; j++) {
-                    start += map[selected[i]][selected[j]];
-                    start += map[selected[j]][selected[i]];
-                    link += map[list.get(i)][list.get(j)];
-                    link += map[list.get(j)][list.get(i)];
-                }
-            }
-            ans = Math.min(ans, Math.abs(start-link));
-            return;
-        }
-
-        for (int i = startIdx; i <= N; i++) {
-            selected[selected.length -cnt] = i;
-            comb(cnt-1, selected, i+1);
+    // 1. 초기화
+    static void makeSet(int[] root, int n){
+        for (int i = 1; i < n+1; i++) {
+            root[i] = i;
         }
     }
 
-    static String input = "6\n" +
-            "0 1 2 3 4 5\n" +
-            "1 0 2 3 4 5\n" +
-            "1 2 0 3 4 5\n" +
-            "1 2 3 0 4 5\n" +
-            "1 2 3 4 0 5\n" +
-            "1 2 3 4 5 0";
+    // 2. union
+    static int findSet(int a, int[] root){
+        if(root[a] == a)
+            return a;
+
+        return root[a] = findSet(root[a], root);
+    }
+
+    // 3.
+    static boolean union(int a, int b, int[] root, int[] rank){
+        a = findSet(a, root);
+        b = findSet(b, root);
+
+        if(root[a] == root[b])
+            return false;
+
+        if(rank[a] < rank[b])
+            root[a] = b;
+        else{
+            root[b] = a;
+            if(rank[a] == rank[b]){
+                rank[a]++;
+            }
+        }
+
+        return true;
+    }
+
+    static String input = "10 9\n" +
+            "1 2\n" +
+            "1 3\n" +
+            "1 4\n" +
+            "1 5\n" +
+            "1 6\n" +
+            "1 7\n" +
+            "1 8\n" +
+            "1 9\n" +
+            "1 10";
 }
