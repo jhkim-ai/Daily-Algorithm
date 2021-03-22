@@ -36,9 +36,54 @@ public class BOJ1753_G5_최단경로 {
         // ---------- 알고리즘 ---------- //
         // Idea. (최단 경로 + weigh 값이 양수 + 그래프)를 나타내므로
         // Dijkstra
-        dijkstra(start, V, list);
+        // dijkstra(start, V, list);
+        dijkstra2(start, V, list);
 
         // ---------- 출력 ---------- //
+        System.out.println(sb);
+    }
+
+    // Priority Queue 를 이용한 dijkstra 알고리즘
+    static void dijkstra2(int start, int V, ArrayList<Node>[] list){
+        // 상황판
+        int[] dist = new int[V+1];
+        boolean[] visited = new boolean[V+1];
+        Arrays.fill(dist, INF);
+
+        // 출발지 선정
+        dist[start] = 0;
+
+        // 우선순위 큐를 이용한 dijkstra
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.add(new Node(start, 0));
+
+        while(!pq.isEmpty()){
+            Node now = pq.poll();   // Priority Queue 에서 뽑으면 그게 최소
+            visited[now.vertex] = true; // 방문 처리
+
+            // 자식 인접리스트 받아오기
+            ArrayList<Node> curNode = list[now.vertex];
+
+            // 자식 인집러시트로부터 다음 원소들 탐색
+            int idx = 0;
+            while(idx < curNode.size()){
+                Node next = curNode.get(idx);
+                if(!visited[next.vertex] && dist[next.vertex] > dist[now.vertex] + next.cost){
+                    dist[next.vertex] = dist[now.vertex] + next.cost;
+                    pq.add(new Node(next.vertex, dist[next.vertex]));
+                }
+                idx++;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int d = 1; d < dist.length; d++) {
+            if(dist[d] == INF)
+                sb.append("INF");
+            else
+                sb.append(dist[d]);
+            sb.append("\n");
+        }
         System.out.println(sb);
     }
 
@@ -90,13 +135,18 @@ public class BOJ1753_G5_최단경로 {
         }
     }
 
-    static class Node {
+    static class Node implements Comparable<Node>{
         int vertex;
         int cost;
 
         public Node(int vertex, int cost) {
             this.vertex = vertex;
             this.cost = cost;
+        }
+
+        @Override
+        public int compareTo(Node n){
+            return Integer.compare(this.cost, n.cost);
         }
     }
 
