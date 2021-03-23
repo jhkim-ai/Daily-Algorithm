@@ -1,4 +1,4 @@
-package Jungol;
+package Category.Dynamic_Programming;
 
 import java.util.*;
 import java.io.*;
