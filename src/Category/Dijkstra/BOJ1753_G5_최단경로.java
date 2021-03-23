@@ -101,7 +101,7 @@ public class BOJ1753_G5_최단경로 {
             int nowVertex = 0;
             int minCost = INF;
 
-            // 1. 새로 시작할 정점을 선택
+            // 1. 새로 시작할 정점을 선택(cost 가 가장 적은 경로를 찾자)
             for (int i = 1; i <= V; i++) {
                 if (!visited[i] && dist[i] < minCost) {
                     nowVertex = i;
