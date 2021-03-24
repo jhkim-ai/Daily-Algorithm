@@ -1,4 +1,4 @@
-package Category.Dynamic_Programming;
+package Category.Union_Find;
 
 import java.util.*;
 import java.io.*;
