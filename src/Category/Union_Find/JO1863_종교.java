@@ -1,81 +1,68 @@
 package Category.Union_Find;
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-// Union-find (트리라 생각하자, 루트에 가까운 쪽으로 이동하자)
 public class JO1863_종교 {
 
-    static int N, M;
-    static int[] parents;
-    static Set<Integer> ans;
-
     public static void main(String[] args) throws Exception {
-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedReader br = new BufferedReader(new StringReader(input));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 
-        N = Integer.parseInt(st.nextToken());   // 학생 수
-        M = Integer.parseInt(st.nextToken());   // 쌍의 수
-        parents = new int[N + 1];
-        ans = new HashSet<>();
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-        // 1. Make-Set
-        make();
+        // 1. makeSet
+        int[] root = new int[n+1];
+        int[] rank = new int[n+1];
+        for (int i = 1; i <= n ; i++) {
+            root[i] = i;
+        }
 
-        // 2. union
-        for (int i = 0; i < M; i++) {
+        while(m-- > 0){
             st = new StringTokenizer(br.readLine(), " ");
-            int studentA = Integer.parseInt(st.nextToken());
-            int studentB = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-            union(studentB, studentA);
+            // 3. union
+            union(root, rank, a, b);
         }
 
-        for (int i = 1; i <= N ; i++) {
-            ans.add(findSet(i));
+        // 4. 출력
+        Set<Integer> s = new HashSet<>();
+        for(int i = 1; i<root.length; i++){
+            s.add(findSet(root, i));
         }
+        System.out.println(s.size());
 
-        System.out.println(ans.size());
     }
 
-    // 1. Make-Set
-    static void make(){
-        for (int i = 1; i < N+1; i++) {
-            parents[i] = i;
-        }
+    // 2. find-set
+    static int findSet(int[] root, int a){
+        if(root[a] == a)
+            return a;
+        return root[a] = findSet(root, root[a]); // path Compression
     }
 
-    // 2. Find-Set
-    static int findSet(int a){
-        if(parents[a] == a) return a;
+    // 3. union
+    static void union(int[] root, int[] rank, int a, int b){
+        a = findSet(root, a);
+        b = findSet(root, b);
 
-        return parents[a] = findSet(parents[a]);    // Path Compression
-    }
-
-    // 3. Union
-    static boolean union(int a, int b){
-        int aRoot = findSet(a);
-        int bRoot = findSet(b);
-
-        // 같은 집합일 시, union(x)
-        if(aRoot == bRoot) return false;
-
-        // 다른 집합일 시, union(o)
-
-        // 주의! 아래와 같은 상황은 불균형을 유발한다
-        // parents[bRoot] = aRoot;
-        // 한쪽으로 치우치는 트리를 만들 수 있다.
-
-        // <결론> 작은 수든, 큰 수든 규칙을 정해야 한다.
-        // 왜냐하면, 이 조건이 없을 시, 오른쪽에서 왼쪽으로만 집합을 하겠다는 의미다.
-        if(aRoot < bRoot){
-            parents[bRoot] = aRoot;
-        }else{
-            parents[aRoot] = bRoot;
+        if(a == b){
+            return;
         }
 
-        return true;
+        // rank 를 이용하여 한 쪽으로 치우쳐지는 경우 (편향트리)를 막는다.
+        // rank 가 큰 (depth 가 깊은) 쪽으로 붙인다.
+        if(rank[a] < rank[b]) {
+            root[a] = b;
+        }
+        else {
+            root[b] = a;
+            if(rank[a] == rank[b])
+                rank[a]++;
+        }
     }
 
     static String input = "10 9\n" +
