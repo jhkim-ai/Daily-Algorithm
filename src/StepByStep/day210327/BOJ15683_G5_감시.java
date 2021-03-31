@@ -1,3 +1,4 @@
+
 package StepByStep.day210327;
 
 import java.util.*;
@@ -9,7 +10,7 @@ public class BOJ15683_G5_감시 {
     static int[][] map;
     static int ans;
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 
@@ -17,12 +18,13 @@ public class BOJ15683_G5_감시 {
         M = Integer.parseInt(st.nextToken());
 
         for (int y = 0; y < N; y++) {
-            st = new StringTokenizer(br.readLine()," ");
+            st = new StringTokenizer(br.readLine(), " ");
             for (int x = 0; x < M; x++) {
                 map[y][x] = Integer.parseInt(st.nextToken());
-                if(map[y][x] == 0)
+                if (map[y][x] == 0)
                     ans++;
             }
         }
     }
 }
+

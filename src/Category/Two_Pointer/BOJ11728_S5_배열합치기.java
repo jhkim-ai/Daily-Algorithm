@@ -10,6 +10,7 @@ public class BOJ11728_S5_배열합치기 {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
     static BufferedReader br;
+
     public static void main(String[] args) throws Exception {
 
         br = new BufferedReader(new InputStreamReader(System.in));
@@ -35,7 +36,7 @@ public class BOJ11728_S5_배열합치기 {
             ans[i] = Integer.parseInt(st.nextToken());
         }
         st = new StringTokenizer(br.readLine(), " ");
-        for (int i = N; i < N+M; i++) {
+        for (int i = N; i < N + M; i++) {
             ans[i] = Integer.parseInt(st.nextToken());
         }
         Arrays.sort(ans);
@@ -47,13 +48,13 @@ public class BOJ11728_S5_배열합치기 {
         }
         System.out.println(sb);
     }
-    
+
     // 범위 확인
-    static boolean isIn(int a, int b){
+    static boolean isIn(int a, int b) {
         return 0 <= a && a < N && 0 <= b && b < M;
     }
 
-    static void solve1() throws Exception{
+    static void solve1() throws Exception {
 
         st = new StringTokenizer(br.readLine(), " ");
         for (int i = 0; i < N; i++) {
@@ -71,27 +72,27 @@ public class BOJ11728_S5_배열합치기 {
         // ans 배열을 넣기 위한 N+M 까지 반복
         for (int i = 0; i < N + M; i++) {
             // N과 M의 범위안에 있을 때
-            if(isIn(arrIdx, arr2Idx)){
+            if (isIn(arrIdx, arr2Idx)) {
                 // arr가 더 크다면, arr2의 원소를 ans에 넣는다.
-                if(arr[arrIdx] > arr2[arr2Idx]){
+                if (arr[arrIdx] > arr2[arr2Idx]) {
                     ans[i] = arr2[arr2Idx++];
                 }
                 // arr2가 더 크다면, arr의 원소를 ans에 넣는다.
-                else if(arr[arrIdx] < arr2[arr2Idx]){
+                else if (arr[arrIdx] < arr2[arr2Idx]) {
                     ans[i] = arr[arrIdx++];
                 }
                 // 값이 같을 때
-                else{
+                else {
                     ans[i++] = arr[arrIdx++];
                     ans[i] = arr2[arr2Idx++];
                 }
             }
             // arrIdx가 N의 범위를 넘을 때
-            else if(arrIdx >= N){
+            else if (arrIdx >= N) {
                 ans[i] = arr2[arr2Idx++];
             }
             // arr2Idx가 M의 범위를 넘을 때
-            else if(arr2Idx >= M){
+            else if (arr2Idx >= M) {
                 ans[i] = arr[arrIdx++];
             }
         }
