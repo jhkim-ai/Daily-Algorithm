@@ -16,6 +16,7 @@ public class BOJ16946_벽부수고이동하기4 {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        StringBuilder sb = new StringBuilder();
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
@@ -33,7 +34,7 @@ public class BOJ16946_벽부수고이동하기4 {
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < M; x++) {
                 if(map[y][x] == 1) {
-                    System.out.println(y + ":" + x +"*********************");
+                    // System.out.println(y + ":" + x +"*********************");
                     int sum = 1;
                     copyMap = new int[N][M];
                     for (int r = 0; r < N; r++) {
@@ -42,17 +43,25 @@ public class BOJ16946_벽부수고이동하기4 {
                     for (int d = 0; d < 4; d++) {
                         int ny = y + dy[d];
                         int nx = x + dx[d];
-                        if(!isIn(ny, nx) || map[ny][nx] != 0) continue;
+                        if(!isIn(ny, nx) || map[ny][nx] != 0 || copyMap[ny][nx] !=0) continue;
                         sum += bfs(ny, nx);
                     }
                     ans[y][x] = sum;
                 }
             }
         }
-        System.out.println("정답!!!!!!!!!!!!!!!");
+        // System.out.println("정답!!!!!!!!!!!!!!!");
         for(int [] a : ans){
             System.out.println(Arrays.toString(a));
         }
+
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < M; x++) {
+                sb.append(ans[y][x]);
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb);
     }
 
     static int bfs(int y, int x) {
@@ -73,7 +82,7 @@ public class BOJ16946_벽부수고이동하기4 {
                 copyMap[ny][nx] = ++len;
             }
         }
-        print();
+        // print();
 
         return len;
     }
