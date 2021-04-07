@@ -3,7 +3,7 @@ package StepByStep.day210406;
 import java.util.*;
 import java.io.*;
 
-public class BOJ1057_토너먼 {
+public class BOJ1057_토너먼트 {
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
