@@ -87,7 +87,7 @@ public class BOJ16946_벽부수고이동하기4 {
                     for (int num : s) {
                         sum += setList.get(num);
                     }
-                    ans[y][x] = sum % 10;
+                    ans[y][x] = sum;
                 }
             }
         }
@@ -115,7 +115,7 @@ public class BOJ16946_벽부수고이동하기4 {
             }
         }
         setList.add(cnt);   // (1)-2. n번째 집합의 원소의 개수를 List에 n번째 index로 저장
-        setNum++;              // 집합 번호 증가
+        setNum++;           // 집합 번호 증가
     }
 
 
@@ -145,11 +145,10 @@ public class BOJ16946_벽부수고이동하기4 {
         print(map);
     }
 
-    static Set<Point> s_1 = new HashSet<>();
     static void bfs_2(int y, int x) {
         int countZero = 1;                        // 0의 개수
         Queue<Point> q_0 = new LinkedList<>();    // 0(길) 탐색용
-        s_1.clear();                              // 1(벽) 탐색용 (중복 방지)
+        Queue<Point> q_1 = new LinkedList<>();    // 1(벽) 탐색용
         visited[y][x] = true;
         q_0.offer(new Point(y, x));
 
@@ -163,21 +162,23 @@ public class BOJ16946_벽부수고이동하기4 {
                 // (2)-1. 인접한 0의 개수를 세고, 0 주변의 -1(벽)을 탐색한다.
                 if (map[ny][nx] == 0) {               // 새 좌표가 0일 경우, 0의 개수 증가
                     q_0.offer(new Point(ny, nx));
-                    visited[ny][nx] = true;
                     countZero++;
-
                 }
                 // (2)-2. 탐색된 -1(벽)에 2-1에서 찾은 인접한 0의 개수를 더한다.
-                else{                                // 새 좌표가 1일 경우, 0에 이웃한 벽이므로
-                    s_1.add(new Point(ny, nx));      // q_1에 추가한다. (중복 방지)
+                else{                                  // 새 좌표가 1일 경우, 0에 이웃한 벽이므로
+                    q_1.offer(new Point(ny, nx));      // q_1에 추가한다.
                 }
+
+                visited[ny][nx] = true;                // (중복 방지)
             }
         }
 
         // 0의 개수 탐색이 끝난 후, 이웃한 1(벽)에 이동 가능한 횟수를 더한다.
-        for(Point wall : s_1) {
-            map[wall.y][wall.x] += countZero;
-            map[wall.y][wall.x] %= 10;
+        while(!q_1.isEmpty()) {
+            Point now = q_1.poll();
+            map[now.y][now.x] += countZero;
+            visited[now.y][now.x] = false;
+            // map[wall.y][wall.x] %= 10;
         }
     }
 
@@ -191,7 +192,7 @@ public class BOJ16946_벽부수고이동하기4 {
         StringBuilder sb = new StringBuilder();
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < M; x++) {
-                sb.append(arr[y][x]);
+                sb.append(arr[y][x] % 10);
             }
             sb.append("\n");
         }
