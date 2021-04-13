@@ -58,12 +58,13 @@ public class SWEA4014_활주로건설 {
                 if (arr[y][x] != arr[y][x - 1]) {
                     // (1) 올라가는 경사로
                     if (arr[y][x] == arr[y][x - 1] + 1) {
+                        // (1)-1. x의 개수 이상일 때 => 활주로 가능
                         if (sameHeight >= X) {
-                            System.out.println("올라가는="+y+":"+x);
+                            sameHeight = 1; // 새로운 높이로 다시 카운트
                             ans++;
-                            break;
                         }
-                        sameHeight = 1;
+                        // (1)-2. x의 개수를 못미칠 때 => 활주로 안됨
+                        else break;
                     }
                     // (2) 내려가는 경사로
                     else if (arr[y][x] == arr[y][x - 1] - 1) {
@@ -82,13 +83,12 @@ public class SWEA4014_활주로건설 {
                                 // (3)-1. 이전에 연속되는 수가 X개 이상이면, 활주로 가능
                                 if (sameHeight >= X) {
                                     ans++;
-                                    System.out.println("내려가는="+y+":"+x);
-                                    break rowCheck;
+                                    // System.out.println("내려가는="+y+":"+x);
+                                    x = i;
+                                    break;
                                 }
                                 // (2)-3. 연속되는 수가 X개 미만이면, 그 행을 계속 탐색
-                                sameHeight = 1;
-                                x = i;
-                                break;
+                                break rowCheck;
                             }
                             // x = 4
                             // 3 3 2 2 2 3 2 2 2 2
