@@ -76,7 +76,6 @@ public class BOJ18428_감시피하기 {
             return;
         }
 
-
         for (int i = startIdx; i < obstacles.size(); i++) {
             selected[selected.length - cnt] = i;
             Point o = obstacles.get(i);
