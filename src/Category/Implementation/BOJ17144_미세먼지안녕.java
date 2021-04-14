@@ -2,7 +2,6 @@ package Category.Implementation;
 
 import java.util.*;
 import java.io.*;
-import java.util.function.IntPredicate;
 
 public class BOJ17144_미세먼지안녕 {
 
@@ -137,8 +136,8 @@ public class BOJ17144_미세먼지안녕 {
             // 유효성 검사 or 배열 돌리기 경계선 검사
             if (!isIn(ny, nx) || ny < pos) {
                 d = (d + 3) % 4;
-                ny = d + dy[d];
-                nx = d + dx[d];
+                ny = y + dy[d];
+                nx = x + dx[d];
             }
 
             // 이동시킬 원소가 공기 청정기가 아니라면 원소 이동
