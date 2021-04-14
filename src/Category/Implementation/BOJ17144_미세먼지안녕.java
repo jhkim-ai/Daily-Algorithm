@@ -2,141 +2,166 @@ package Category.Implementation;
 
 import java.util.*;
 import java.io.*;
+import java.util.function.IntPredicate;
 
 public class BOJ17144_미세먼지안녕 {
 
-    static final int[] dy = {-1, 1, 0, 0};
-    static final int[] dx = {0, 0, -1, 1};
+    static final int[] dy = {-1, 0, 1, 0};  // 상, 우, 하, 좌 (배열 돌리기를 위함)
+    static final int[] dx = {0, 1, 0, -1};
 
     static int N, M, T;
-    static int[][] map;
-    static Point[] machine;
-    static Queue<Point> q;
+    static int pos;         // 공기 청정기 위치
+    static int[][] map;     // 원본
+    static int[][] divide;  // 분할할 수 있는 미세 먼지 저장 (원본 훼손 방지)
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 
-        N = Integer.parseInt(st.nextToken());   // 행
-        M = Integer.parseInt(st.nextToken());   // 열
-        T = Integer.parseInt(st.nextToken());   // T초 후
-        q = new LinkedList<>();                 // 미세 먼지 위치
-        machine = new Point[2];                 // 공기 청저기 위치 (위, 아래)
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        T = Integer.parseInt(st.nextToken());
         map = new int[N][M];
 
-        int index = 0;
         for (int y = 0; y < N; y++) {
             st = new StringTokenizer(br.readLine(), " ");
             for (int x = 0; x < M; x++) {
                 map[y][x] = Integer.parseInt(st.nextToken());
-                if (map[y][x] == -1) {                      // 공기 청정기 위치 (위부터 아래)
-                    machine[index++] = new Point(y, x);
-                } else if (map[y][x] != 0) {                // 미세 먼지 위치
-                    q.offer(new Point(y, x));
+                if (map[y][x] == -1) {
+                    pos = y;    // 공기청정기 하단부를 저장
                 }
             }
         }
-        for (int t = 0; t < T; t++) {
+
+        while(T-- > 0) {
             // 1. 미세먼지 확산
             spreadDust();
-            // 2. 공기 청정기 순환
-            airPurifier();
-            // 3. 새로운 먼지 위치를 Queue에 저장
-            setLocationOfDust();
+            // 2. 먼지 순환
+            topOfAirPurifier();
+            bottomOfAirPurifier();
         }
 
-        // 4. 미세먼지의 양 구하기
-        System.out.println(getCountOfDust());
+        // 3. 먼지의 총 개수
+        int ans = getCountOfDust();
+        System.out.println(ans);
     }
 
     // 1. 미세먼지 확산
     static void spreadDust() {
+        // (1)-1. 각 먼지당 분할(divide)해야할 먼지 저장
+        saveDivide();
 
-        int[][] tempMap = new int[N][M];
-
-        // (1)-1 먼지가 입력과 동시에 Queue에 들어간 상태니, 하나씩 뽑으며 확산을 진행
-        int size = q.size();                    // (1)-2. Queue에 저장된 먼지의 개수만큼 진행
-        while (size-- > 0) {
-            Point now = q.poll();               // (1)-3. 한 먼지 좌표를 Get
-            int dustSize = map[now.y][now.x];   // (1)-4. 현 위치의 먼지의 양 Get
-            dustSize /= 5;                      // (1)-5. 확산시킬 먼지의 양 (N/5)
-
-            for (int d = 0; d < 4; d++) {       // (1)-6. 새좌표
-                int ny = now.y + dy[d];
-                int nx = now.x + dx[d];
-
-                if (!isIn(ny, nx) || map[ny][nx] == -1) continue;
-
-                tempMap[ny][nx] += dustSize;        // (1)-7. 확산될 다음 새위치에 먼지( (1)-5 )를 임시 Map에 더한다.
-                map[now.y][now.x] -= dustSize;      // (1)-8. 확산 후, 현 위치의 먼지의 양을 줄인다.
-            }
-        }
-
-        // 임시저장했던 학산된 먼지를 원래 Map으로 갱신한다.
+        // (1)-2. 먼지 확산
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < M; x++) {
-                map[y][x] += tempMap[y][x];
-            }
-        }
-    }
+                if (map[y][x] <= 0) continue;    // 공기 청정기나 먼지가 없을 때는 제외
 
-    // 2. 공기 청정기 순환
-    static void airPurifier() {
-        // (2)-1. 반시계  (행: 0~2, 열: 0~M-1)
-        Point top = machine[0];
-        for (int i = top.y - 1; i >= 1; i--) {    // 왼쪽면
-            map[i][0] = map[i - 1][0];
-        }
-        for (int i = 1; i < M; i++) {       // 윗면
-            map[0][i - 1] = map[0][i];
-        }
-        for (int i = 1; i <= top.y; i++) {  // 오른쪽면
-            map[i - 1][M - 1] = map[i][M - 1];
-        }
-        for (int i = M - 1; i >= 2; i--) {    // 아랫면
-            map[top.y][i] = map[top.y][i - 1];
-        }
-        map[top.y][1] = 0;
+                // New 좌표 (4방 탐색)
+                for (int d = 0; d < 4; d++) {
+                    int ny = y + dy[d];
+                    int nx = x + dx[d];
 
-        // (2)-2. 시계
-        Point down = machine[1];
-        for (int i = down.y + 1; i < N - 1; i++) {    // 왼쪽면
-            map[i][0] = map[i + 1][0];
-        }
-        for (int i = 0; i < M - 1; i++) {       // 아랫면
-            map[N - 1][i] = map[N - 1][i + 1];
-        }
-        for (int i = N - 1; i > down.y; i--) {   // 오른쪽면
-            map[i][M - 1] = map[i - 1][M - 1];
-        }
-        for (int i = M - 1; i > 1; i--) {         // 윗면
-            map[down.y][i] = map[down.y][i - 1];
-        }
-        map[down.y][1] = 0;
-    }
+                    // valid check
+                    if (!isIn(ny, nx) || map[ny][nx] == -1) continue;
 
-    // 3. 새로운 먼지 위치를 Queue에 저장
-    static void setLocationOfDust() {
-        q.clear();
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < M; x++) {
-                if (map[y][x] == -1) continue;
-                if (map[y][x] != 0) {
-                    q.offer(new Point(y, x));
+                    // saveDivide()로부터 분할 가능한 먼지양만큼 더 하고, 기존의 먼지는 빼준다.
+                    map[ny][nx] += divide[y][x];
+                    map[y][x] -= divide[y][x];
                 }
             }
         }
     }
 
-    // 4. 미세먼지의 양 구하기
-    static int getCountOfDust() {
+    // (1)-1. 각 먼지당 분할(divide)해야할 먼지 저장
+    // why? TestCase 1의 5행 6열을 보면, 10과 43이 붙어있다.
+    // 동시에 확산 하는 것이기에 원본이 훼손 되기 전에 먼저 얼마만큼 분해(divide) 가능한지 저장해야한다.
+    static void saveDivide() {
+        divide = new int[N][M]; // 분할 가능한 먼지의 양 임시 저장소
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < M; x++) {
+                if (map[y][x] < 5) continue;
+                divide[y][x] = map[y][x] / 5;
+            }
+        }
+    }
+
+    // 2. 먼지 순환 (배열 돌리기)
+    static void topOfAirPurifier() {
+        // (2)-1. 위 (반시계 방향)
+        int y = pos - 2;
+        int x = 0;
+        int d = 0;      // 상, 우, 하, 좌
+        int ny, nx;
+
+        // 공기 청정기를 만날 때까지 반복
+        while (map[y][x] != -1) {
+            // 새 좌표
+            ny = y + dy[d];
+            nx = x + dx[d];
+
+            // 범위 유효성 검사 or 배열을 돌리는 경계선 검사
+            if (!isIn(ny, nx) || ny >= pos) {
+                d++;
+                ny = y + dy[d];
+                nx = x + dx[d];
+            }
+
+            // 다음 원소가 공기 청정기가 아닌 배열 돌리기의 원소라면
+            if (map[ny][nx] != -1) {
+                map[y][x] = map[ny][nx];
+            }
+            // 다음 원소가 공기 청정기라면
+            else {
+                map[y][x] = 0;
+            }
+
+            // 좌표갱신
+            y = ny;
+            x = nx;
+        }
+    }
+
+    // 2. 먼지 순환 (배열 돌리기)
+    static void bottomOfAirPurifier() {
+        // (2)-2. 아래 (시계 방향)
+        int y = pos + 1;
+        int x = 0;
+        int d = 2;      // "하"부터 시작
+        int ny, nx;
+
+        // 공기 청정기가 아닐 때까지 반복
+        while (map[y][x] != -1) {
+            ny = y + dy[d];
+            nx = x + dx[d];
+
+            // 유효성 검사 or 배열 돌리기 경계선 검사
+            if (!isIn(ny, nx) || ny < pos) {
+                d = (d + 3) % 4;
+                ny = d + dy[d];
+                nx = d + dx[d];
+            }
+
+            // 이동시킬 원소가 공기 청정기가 아니라면 원소 이동
+            if (map[ny][nx] != -1) {
+                map[y][x] = map[ny][nx];
+            }
+            // 이동시킬 원소가 공기 청정기라면, 0으로 갱신
+            else {
+                map[y][x] = 0;
+            }
+
+            // 좌표 갱신
+            y = ny;
+            x = nx;
+        }
+    }
+
+    static int getCountOfDust(){
         int cnt = 0;
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < M; x++) {
-                if (map[y][x] == -1) continue;
-                if (map[y][x] != 0) {
-                    cnt+=map[y][x];
-                }
+                if(map[y][x] == -1) continue;
+                cnt += map[y][x];
             }
         }
         return cnt;
@@ -144,25 +169,5 @@ public class BOJ17144_미세먼지안녕 {
 
     static boolean isIn(int y, int x) {
         return y >= 0 && y < N && x >= 0 && x < M;
-    }
-
-    static class Point {
-        int y;
-        int x;
-
-        public Point(int y, int x) {
-            this.y = y;
-            this.x = x;
-        }
-    }
-
-    static void print() {
-        System.out.println("===============");
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < M; x++) {
-                System.out.print(map[y][x] + " ");
-            }
-            System.out.println();
-        }
     }
 }
