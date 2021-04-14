@@ -3,74 +3,79 @@ import java.util.*;
 
 public class Main {
 
+    static final int[] dy = {-1, 1, 0, 0};
+    static final int[] dx = {0, 0, -1, 1};
+
+    static int N, M;
+
+    static int[][] map;
+    static Queue<Point> q;
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        map = new int[N][M];
+        q = new LinkedList<>();
 
-        // 1. makeSet
-        int[] root = new int[n+1];
-        int[] rank = new int[n+1];
-        for (int i = 1; i <= n ; i++) {
-            root[i] = i;
-        }
-
-        while(m-- > 0){
+        for (int y = 0; y < N; y++) {
             st = new StringTokenizer(br.readLine(), " ");
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-
-            // 3. union
-            union(root, rank, a, b);
+            for (int x = 0; x < M; x++) {
+                map[y][x] = Integer.parseInt(st.nextToken());
+            }
         }
 
-        // 4. 출력
-        Set<Integer> s = new HashSet<>();
-        for(int i = 1; i<root.length; i++){
-            s.add(findSet(root, i));
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < M; x++) {
+                if (map[y][x] == 1) {
+                    q.offer(new Point(y, x));
+                }
+            }
         }
-        System.out.println(s.size());
-
+        int day = bfs();
+        if(day != -1)
+            System.out.println(day-1);
+        else
+            System.out.println(day);
     }
 
-    // 2. find-set
-    static int findSet(int[] root, int a){
-        if(root[a] == a)
-            return a;
-        return root[a] = findSet(root, root[a]); // path Compression
+    static int bfs() {
+        while (!q.isEmpty()) {
+            Point now = q.poll();
+            for (int d = 0; d < 4; d++) {
+                int ny = now.y + dy[d];
+                int nx = now.x + dx[d];
+                if(!isIn(ny, nx) || map[ny][nx] != 0) continue;
+                map[ny][nx] = map[now.y][now.x] + 1;
+                q.offer(new Point(ny, nx));
+            }
+        }
+
+        int day = Integer.MIN_VALUE;
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < M; x++) {
+                if(map[y][x] == 0) {
+                    return -1;
+                }
+                day = Math.max(map[y][x], day);
+            }
+        }
+        return day;
     }
 
-    // 3. union
-    static void union(int[] root, int[] rank, int a, int b){
-        a = findSet(root, a);
-        b = findSet(root, b);
-
-        if(a == b){
-            return;
-        }
-
-        // rank 를 이용하여 한 쪽으로 치우쳐지는 경우 (편향트리)를 막는다.
-        // rank 가 큰 (depth 가 깊은) 쪽으로 붙인다.
-        if(rank[a] < rank[b]) {
-            root[a] = b;
-        }
-        else {
-            root[b] = a;
-            if(rank[a] == rank[b])
-                rank[a]++;
-        }
+    static boolean isIn(int y, int x){
+        return y >= 0 && y < N && x >= 0 && x < M;
     }
 
-    static String input = "10 9\n" +
-            "1 2\n" +
-            "1 3\n" +
-            "1 4\n" +
-            "1 5\n" +
-            "1 6\n" +
-            "1 7\n" +
-            "1 8\n" +
-            "1 9\n" +
-            "1 10";
+    static class Point {
+        int y;
+        int x;
+
+        public Point(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
+    }
 }

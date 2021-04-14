@@ -29,8 +29,8 @@ public class BOJ2617_구슬찾기 {
             st = new StringTokenizer(br.readLine());
             int heavy = Integer.parseInt(st.nextToken());
             int light = Integer.parseInt(st.nextToken());
-            inputHeavy[heavy].add(light);
-            inputLight[light].add(heavy);
+            inputHeavy[heavy].add(light);   // index보다 가벼운 것
+            inputLight[light].add(heavy);   // index보다 무거운 것
         }
 
         ansHeavy = new HashSet[N+1];
@@ -43,23 +43,21 @@ public class BOJ2617_구슬찾기 {
         for (int i = 1; i < N+1; i++) {
             for(int num : inputHeavy[i]){
                 nextList = new ArrayList<>();
-                dfs(num);
+                dfs(num, new ArrayList<>());
             }
         }
-
-
     }
 
-    static void dfs(int now){
-        nextList.add(now);
+    static void dfs(int now, ArrayList<Integer> list){
+        list.add(now);
 
         for(int next : inputHeavy[now]){
             if (next == 0) {
                 for (int element : nextList)
-                ansHeavy[now].add(element);
+                    ansHeavy[now].add(element);
                 return;
             }
-            dfs(next);
+            dfs(next, list);
         }
     }
 }
