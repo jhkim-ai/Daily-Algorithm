@@ -21,16 +21,16 @@ public class SWEA_5604_구간합 {
             ans = 0;
             long po = 1;    // 자릿수
             while (A <= B) {
-
-                // B를 줄이고
+                // 10 ~ 19 를 한 층으로 보자
+                // B를 줄여 9자리로 맞추자
                 while (B % 10 != 9 && A <= B) {
-                    cal(B, po);
+                    cal(B, po); // 자릿수 계산
                     B--;
                 }
                 // System.out.println(ans);
                 if (A > B) break;
 
-                // A를 늘리고
+                // A를 늘리고 0자리로 맞추자
                 while (A % 10 != 0 && A <= B) {
                     cal(A, po);
                     A++;
@@ -52,12 +52,11 @@ public class SWEA_5604_구간합 {
         System.out.println(sb);
     }
 
+    // 자릿수 계산
     static void cal(long a, long b) {
         while (a > 0) {
             ans += (a % 10) * b;
             a /= 10;
         }
     }
-
-    static String input = "33(562(71(9)))";
 }
