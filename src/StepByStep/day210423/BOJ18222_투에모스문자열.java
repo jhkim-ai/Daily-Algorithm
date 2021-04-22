@@ -12,7 +12,7 @@ public class BOJ18222_투에모스문자열 {
 
         long K = Long.parseLong(br.readLine());
 
-        // Idea. 거듭제곱으로 생성되는 것을 역으로 logn을 이용하여 역추적.
+        // Idea. 거듭제곱으로 생성되는 것을 역으로 logn을 이용하여 역추적. 즉, f(x) = 1 - f(x-n번째 구역)
         //       문제 조건의 2~3 과정을 진행하면 n번째는 2^(n-1)개의 문자열이 생성.
         //       10^18을 약 60번만에 찾는다. O(logN)
 
