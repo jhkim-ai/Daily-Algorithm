@@ -6,7 +6,6 @@ import java.io.*;
 public class SWEA_5643_키순서 {
 
     static int N, M, ans, cnt;
-    static int[][] adj, radj;
     static ArrayList[] tall;
     static ArrayList[] small;
 
