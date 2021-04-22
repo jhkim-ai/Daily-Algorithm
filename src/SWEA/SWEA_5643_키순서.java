@@ -18,11 +18,10 @@ public class SWEA_5643_키순서 {
         for (int t = 1; t <= T; ++t) {
             N = Integer.parseInt(br.readLine());      // 학생 수
             M = Integer.parseInt(br.readLine());      // 비교 횟수
+            ans = 0;
 
             tall = new ArrayList[N+1];
             small = new ArrayList[N+1];
-            adj = new int[N+1][N+1];
-            radj = new int[N+1][N+1];
 
             for (int i = 0; i < N+1; ++i) {
                 tall[i] = new ArrayList<Integer>();
@@ -36,8 +35,6 @@ public class SWEA_5643_키순서 {
 
                 tall[sMan].add(tMan);   // 나보다 큰 사람 목록
                 small[tMan].add(sMan);  // 나보다 작은 사람 목록
-
-                adj[sMan][tMan] = radj[tMan][sMan] = 1;
             }
 
             // ---------- 알고리즘 시작 ---------- //
@@ -47,10 +44,8 @@ public class SWEA_5643_키순서 {
 
             for(int i = 1 ; i < N+1; ++i){
                 cnt = 0;
-//                dfs(tall, i, new boolean[N+1]);
-//                dfs(small, i, new boolean[N+1]);
-                dfs(adj, i, new boolean[N+1]);
-                dfs(radj, i, new boolean[N+1]);
+                dfs(tall, i, new boolean[N+1]);
+                dfs(small, i, new boolean[N+1]);
                 if(cnt == N-1) ans++;
             }
 
@@ -58,28 +53,21 @@ public class SWEA_5643_키순서 {
         }
         System.out.println(sb);
     }
-    static void dfs(int[][] adj, int num, boolean[] visited){
-    // static void dfs(ArrayList[] list, int num, boolean[] visited){
+     static void dfs(ArrayList[] list, int num, boolean[] visited){
 
         visited[num] = true;
 
         // 나(num)보다 큰(작은) 사람들의 목록
-//        List<Integer> men = list[num];
+        List<Integer> men = list[num];
 
         // 나(num)보다 큰(작은) 사람이 없다면
-        // if(men.size() == 0) return;
+        if(men.size() == 0) return;
 
-//        for(int i = 0 ; i < men.size(); ++i){
-//            int next = men.get(i);
-//            if(visited[next]) continue;
-//            cnt++;
-//            dfs(list, next, visited);
-//        }
-        for(int i = 1; i<=N; ++i){
-            if(adj[num][i] == 1 && !visited[i]){
-                cnt++;
-                dfs(adj, i, visited);
-            }
+        for(int i = 0 ; i < men.size(); ++i){
+            int next = men.get(i);
+            if(visited[next]) continue;
+            cnt++;
+            dfs(list, next, visited);
         }
     }
 }
