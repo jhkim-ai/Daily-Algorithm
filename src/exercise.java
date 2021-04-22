@@ -1,58 +1,97 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class exercise {
 
-    static int N;
-    static long[] dp; // Memoization
+    static int N, M, ans, cnt;
+    static ArrayList[] tall;
+    static ArrayList[] small;
 
-    public static void main(String[] args) throws Exception{
-
-        // (1). Bottom-Up 방식 (for 문)
-        // DP_Bottom_Up();
-
-        // (2). Top-Down 방식 (Recursive)
-        DP_Top_Down();
-    }
-
-    // (1). Bottom-Up 방식 (for 문)
-    static void DP_Bottom_Up() throws Exception{
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedReader br = new BufferedReader(new StringReader(input));
+        StringBuilder sb = new StringBuilder();
 
-        N = Integer.parseInt(br.readLine());
-        dp = new long[N+1];
+        int T = Integer.parseInt(br.readLine());
+        for (int t = 1; t <= T; ++t) {
+            N = Integer.parseInt(br.readLine());    // 학생 수
+            M = Integer.parseInt(br.readLine());    // 비교 횟수
+            ans = 0;
+            tall = new ArrayList[N+1];              // 나보다 큰 사람 목록
+            small = new ArrayList[N+1];             // 나보다 작은 사람 목록
+            for (int i = 0; i < N+1; ++i) {
+                tall[i] = new ArrayList<Integer>();
+                small[i] = new ArrayList<Integer>();
+            }
 
-        dp[0] = 0;
-        dp[1] = 1;
+            for (int i = 0; i < M; ++i) {
+                StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+                int sMan = Integer.parseInt(st.nextToken());
+                int tMan = Integer.parseInt(st.nextToken());
 
-        // Bottom-Up 방식 (for 문)
-        for (int i = 2; i < N+1; i++) {
-            dp[i] = dp[i-1] + dp[i-2];
+                tall[sMan].add(tMan);
+                small[tMan].add(sMan);
+            }
+
+//            for(int i = 1; i < small.length; ++i){
+//                System.out.print(i+"번째: ");
+//                for(int j = 0; j<small[i].size(); ++j){
+//                    System.out.print(small[i].get(j) + " ");
+//                }
+//                System.out.println();
+//            }
+
+            // ---------- 알고리즘 시작 ---------- //
+
+            // Idea. 내가 몇 번째인지를 알려면, 나를 기준으로
+            //       (내 위의 명 수 + 내 아래의 명 수)가 N-1명이면 된다.
+
+            for(int i = 1 ; i < N+1; ++i){
+//                System.out.println("==========");
+//                System.out.println(i+"번째: ");
+                cnt = 0;
+                dfs(tall, i, new boolean[N+1]);
+                dfs(small, i, new boolean[N+1]);
+                if(cnt == N-1) {
+//                    System.out.println("###"+i);
+                    ans++;
+                }
+//                System.out.println();
+            }
+
+            sb.append(String.format("#%d %d\n", t, ans));
         }
-        System.out.println(dp[N]);
+        System.out.println(sb);
     }
 
-    // ***************************************************************************
+    static void dfs(ArrayList[] list, int num, boolean[] visited){
 
-    // (2). Bottom-Up 방식 (Recursive 문)
-    static void DP_Top_Down() throws Exception{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        visited[num] = true;
 
-        N = Integer.parseInt(br.readLine());
-        dp = new long[N+1];
-        dp[0] = 0;
-        dp[1] = 1;
-        
-        // (2) -1 fibonacci 함수를 이용한 재귀
-        System.out.println(fibo(N));
+        // 나(num)보다 큰(작은) 사람들의 목록
+        List<Integer> men = list[num];
+
+        // 나(num)보다 큰(작은) 사람이 없다면
+        if(men.size() == 0){
+            return;
+        }
+
+//        System.out.print("("+cnt+")"+"->");
+        for(int i = 0 ; i < men.size(); ++i){
+            int next = men.get(i);
+            if(visited[next]) continue;
+            cnt++;
+            dfs(list, next, visited);
+        }
     }
-    // (2) - 2 재귀적 dp 접근
-    static long fibo(int n){
-        if(n == 0)
-            return 0;
-        if(dp[n] == 0)
-            dp[n] = fibo(n-1) + fibo(n-2);
-        return dp[n];
-    }
-    static String input = "16";
+
+    static String input = "1\n" +
+            "6\n" +
+            "6\n" +
+            "1 5\n" +
+            "3 4\n" +
+            "5 4\n" +
+            "4 2\n" +
+            "4 6\n" +
+            "5 2";
 }
