@@ -7,10 +7,7 @@ public class BOJ2687_성냥개비 {
 
     static final int[] arr = {6, 2, 5, 5, 4, 5, 6, 3, 7, 6};
     static long[] dp;
-
     static int T, N;
-    static int ansMin, ansMax;
-    static List<Integer> list;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
