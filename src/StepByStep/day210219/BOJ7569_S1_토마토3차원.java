@@ -5,99 +5,105 @@ import java.util.*;
 
 public class BOJ7569_S1_토마토3차원 {
 
-    static int N, M, H;
-    static int[][][] map;
-    static int ans;
-    static Queue<Point> q;
-    static int[] dy = {-1, 1, 0, 0, 0, 0};
-    static int[] dx = {0, 0, -1, 1, 0, 0};
-    static int[] dh = {0, 0, 0, 0, 1, -1};
+    public static final int[] dz = {0, 0, 0, 0, 1, -1}; // 위, 아래
+    public static final int[] dy = {-1, 1, 0, 0, 0, 0}; // 상, 하
+    public static final int[] dx = {0, 0, -1, 1, 0, 0}; // 좌, 우
 
-    static boolean flag = false;
-
-    static StringBuilder sb = new StringBuilder();
+    public static int N, M, H;
+    public static int[][][] map;
+    public static boolean[][][] visited;
+    public static Queue<Point> q;
 
     public static void main(String[] args) throws Exception {
-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedReader br = new BufferedReader(new StringReader(input));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
         M = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
         H = Integer.parseInt(st.nextToken());
-
         map = new int[H][N][M];
-
         q = new LinkedList<>();
-        ans = 0;
-        for (int h = 0; h < H; h++) {
-            for (int i = 0; i < N; i++) {
+        visited = new boolean[H][N][M];
+
+        // 입력
+        for (int z = 0; z < H; ++z) {
+            for (int y = 0; y < N; ++y) {
                 st = new StringTokenizer(br.readLine());
-                for (int j = 0; j < M; j++) {
-                    map[h][i][j] = Integer.parseInt(st.nextToken());
-                    if (map[h][i][j] == 1)
-                        q.offer(new Point(i, j, h));
+                for (int x = 0; x < M; ++x) {
+                    map[z][y][x] = Integer.parseInt(st.nextToken());
+                    if (map[z][y][x] == 1) {
+                        q.offer(new Point(z, y, x));    // 토마토를 q에 삽입
+                        visited[z][y][x] = true;        // 토마토가 있는 위치는 방문 표시
+                    }
                 }
             }
         }
-        bfs();
-        if(flag)
-            System.out.println(-1);
-        else {
-            sb.append(ans-1);
-            System.out.println(sb);
-        }
+
+        // ========== 알고리즘 시작 ==========
+        System.out.println(bfs());
     }
 
-    static void bfs() {
+    // bfs 탐색을 이용한 최단거리 찾기기
+   public static int bfs() {
         while (!q.isEmpty()) {
-            Point p = q.poll();
+            Point now = q.poll();
+            for (int d = 0; d < 6; ++d) {
+                int nz = now.z + dz[d];
+                int ny = now.y + dy[d];
+                int nx = now.x + dx[d];
 
-            for (int d = 0; d < 6; d++) {
-                int nh = p.h + dh[d];
-                int ny = p.y + dy[d];
-                int nx = p.x + dx[d];
+                // 배열 범위를 벗어나거나 방문한 적이 있거나 토마토가 들어있지 않은 칸일 때
+                if(!isIn(nz, ny, nx) || visited[nz][ny][nx] || map[nz][ny][nx] == -1) continue;
 
-                if(isIn(ny, nx, nh) && map[nh][ny][nx] == 0){
-                    map[nh][ny][nx] = map[p.h][p.y][p.x] + 1;
-                    q.offer(new Point(ny, nx, nh));
-                }
+                // 유효성 검사를 마친 후, 인접한 토마토에 영향
+                visited[nz][ny][nx] = true; // 방문 표시
+                map[nz][ny][nx] = map[now.z][now.y][now.x] + 1; // 거리 증가
+                q.offer(new Point(nz, ny, nx)); // q에 삽입
             }
         }
-        for (int h = 0; h < H; h++) {
+
+        // 정답 찾기
+        int ans = Integer.MIN_VALUE;
+        for (int z = 0; z < H; z++) {
             for (int y = 0; y < N; y++) {
                 for (int x = 0; x < M; x++) {
-                    if (map[h][y][x] == 0) {
-                        flag = true;
-                        return;
-                    }
-                    ans = Math.max(ans, map[h][y][x]);
+                    int day = map[z][y][x];
+                    if(day == 0)
+                        return -1;
+                    ans = Math.max(day, ans);
                 }
             }
         }
+        return ans-1;
     }
-
-    static boolean isIn(int y, int x, int h) {
-        return 0 <= y && y < N && 0 <= x && x < M && 0<= h && h < H;
+    
+    // 배열 범위 검사
+    public static boolean isIn(int z, int y, int x) {
+        return z >= 0 && y >= 0 && x >= 0 && z < H && y < N && x < M;
     }
 
     static class Point {
-        int h;
-        int x;
+        int z;
         int y;
+        int x;
 
-        public Point(int h, int y, int x) {
-            this.h = h;
-            this.x = x;
+        public Point(int z, int y, int x) {
+            this.z = z;
             this.y = y;
+            this.x = x;
         }
     }
 
-    static String input = "5 3 2\n" +
-            "0 0 0 0 0\n" +
-            "0 0 0 0 0\n" +
-            "0 0 0 0 0\n" +
-            "0 0 0 0 0\n" +
-            "0 0 1 0 0\n" +
-            "0 0 0 0 0";
+    public static void print(int[][][] arr) {
+        System.out.println("===============");
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < N; j++) {
+                for (int k = 0; k < M; k++) {
+                    System.out.print(arr[i][j][k] + " ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }
+    }
 }
