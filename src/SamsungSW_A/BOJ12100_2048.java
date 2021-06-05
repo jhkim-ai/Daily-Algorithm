@@ -29,7 +29,7 @@ public class BOJ12100_2048 {
         // ========== 알고리즘 시작 ========== //
         // 완전 탐색 (중복 순열)
         dupPermutation(5, new int[5]);
-        print();
+//        print();
     }
 
     // 중복 순열
@@ -44,6 +44,23 @@ public class BOJ12100_2048 {
             dupPermutation(cnt-1, selected);
         }
     }
+
+    // 상
+    public static void moveUp(){
+        int empty = -1;
+        for(int x = 0; x < N; ++x){
+            for(int y = 0; y < N; ++y){
+                if(tmpMap[y][x] == 0) {
+                    empty = y;  // 비어있는 위치 저장
+                    continue;
+                }
+                tmpMap[y][empty] = tmpMap[y][x]; // 위로 이동
+                tmpMap[y][x] = 0;                // 이전 값 0으로 초기화
+            }
+        }
+    }
+
+    // map 초기화
     public static int[][] initMap(){
         int[][] tmp = new int[N][N];
 
@@ -54,6 +71,8 @@ public class BOJ12100_2048 {
         }
         return tmp;
     }
+
+    // debugging 용
     public static void print() {
         System.out.println("============");
         for (int y = 0; y < N; ++y) {
