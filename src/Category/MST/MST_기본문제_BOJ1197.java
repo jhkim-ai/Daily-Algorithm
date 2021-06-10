@@ -3,7 +3,7 @@ package Category.MST;
 import java.util.*;
 import java.io.*;
 
-public class BOJ1197_최소스패닝트리 {
+public class MST_기본문제_BOJ1197 {
 
     public static int V, E;
     public static Point[] edges;
