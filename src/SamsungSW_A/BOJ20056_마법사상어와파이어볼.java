@@ -9,8 +9,8 @@ public class BOJ20056_마법사상어와파이어볼 {
     public static final int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
 
     public static int N, M, K;
-    public static int[] countFireBall;
-    public static Queue<FireBall> fireBalls;
+    public static List<FireBall>[][][] fireBall;
+    public static Queue<FireBall> moveQ;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -19,8 +19,12 @@ public class BOJ20056_마법사상어와파이어볼 {
         M = Integer.parseInt(st.nextToken());    // 파이어볼의 개수
         K = Integer.parseInt(st.nextToken());    // 명령어 개수
 
-        countFireBall = new int[N * N];          // 해당 위치의 FireBall 개수
-        fireBalls = new LinkedList<>();          // FireBall 을 Queue 에 저장 (삭제, 삽입 빈번)
+        fireBall = new ArrayList[N][N][1];       // FireBall 을 3차원 arrayList 에 저장
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < N; x++) {
+                fireBall[y][x][0] = new ArrayList<>();
+            }
+        }
 
         // FireBall 정보 입력
         for (int i = 0; i < M; ++i) {
@@ -30,147 +34,130 @@ public class BOJ20056_마법사상어와파이어볼 {
             int m = Integer.parseInt(st.nextToken());
             int s = Integer.parseInt(st.nextToken());
             int d = Integer.parseInt(st.nextToken());
-            int index = y * N + x;
 
-            countFireBall[index]++;
-            fireBalls.offer(new FireBall(index, y, x, m, s, d));
+            fireBall[y][x][0].add(new FireBall(y, x, m, s, d));
         }
 
-        while(K-- > 0){
+        // ======== 알고리즘 시작 ======== //
+        // "주의"  1. Queue 를 for 문으로 탐색할 때 주의하자.
+        //        2. 첫 풀이에서 모든 것을 Queue 하나로 관리하였더니 시간 초과가 났다.
+
+        // K 번의 명령 실행
+        while (K-- > 0) {
             move();
             sumFireBall();
         }
 
+        // 남아있는 FireBall 의 질량의 합
         System.out.println(getTotalMass());
     }
 
-    // 파이어볼 이동
+    // 1. 파이어볼 이동
     public static void move() {
-        for (int idx = 0; idx < fireBalls.size(); ++idx) {
-            FireBall now = fireBalls.poll();
-            countFireBall[now.index]--; // 움직일 것이기 때문에, 기존 위치에서의 FireBall 개수 - 1
+        moveQ = new LinkedList<>();
+
+        // 1-1. 현재 위치한 모든 FireBall 을 Queue 에 저장
+        // [Queue 에 저장하는 이유] => 이미 움직인 FireBall 을 또 움직이지 않기 위해서
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < N; x++) {
+                int size = fireBall[y][x][0].size();
+                if (size == 0) continue;             // FireBall 이 없다면 pass
+
+                while (size-- > 0) {                 // 위치한 FireBall 을 Queue 에 저장
+                    moveQ.offer(fireBall[y][x][0].get(size));
+                }
+                fireBall[y][x][0].clear();
+            }
+        }
+
+        // 1-2. FireBall 을 조건에 맞게 이동
+        while (!moveQ.isEmpty()) {
+            FireBall fb = moveQ.poll();
 
             // d 방향으로 s 칸 움직이기
-            now.y = ( now.y + (dy[now.d] * now.s) ) % N; // 1번 행과 N번 행은 연결
-            now.x = ( now.x + (dx[now.d] * now.s) ) % N; // 1번 열과 N번 열은 연결
+            fb.y = (fb.y + (dy[fb.d] * fb.s)) % N; // 1번 행과 N번 행은 연결
+            fb.x = (fb.x + (dx[fb.d] * fb.s)) % N; // 1번 열과 N번 열은 연결
 
-            if(now.y < 0) now.y += N;
-            if(now.x < 0) now.x += N;
+            if (fb.y < 0) fb.y += N;
+            if (fb.x < 0) fb.x += N;
 
-            // index 변경
-            now.index = now.y * N + now.x;
-            countFireBall[now.index]++;
-
-            fireBalls.offer(new FireBall(now.index, now.y, now.x, now.m, now.s, now.d));
+            fireBall[fb.y][fb.x][0].add(fb);
         }
     }
 
-    // 파이어볼 합치기
-    public static void sumFireBall(){
-        int ny, nx;
-        List<Integer> listIdx = new ArrayList<>(); // 2개 이상이 위치한 FireBall 의 index 저장
+    // 2. 파이어볼 합치기
+    public static void sumFireBall() {
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < N; x++) {
+                if (fireBall[y][x][0].size() <= 1) continue; // 같은 위치에 존재하는 FireBall 이 1개 이하면 pass
 
-        // countFireBall 에서 2개 이상인 장소를 listIdx 에 저장
-        for(int i = 0; i < countFireBall.length; ++i){
-            if(countFireBall[i] == 0 || countFireBall[i] == 1) continue;
-            listIdx.add(i);
-        }
-
-        // 2개 이상 위치한 FireBall 이 없다면
-        if(listIdx.size() == 0) return;
-
-        // listIdx 에서 index 가 같은 것들을 뽑는다.
-        for (int index : listIdx) {
-
-            ny = index / N;
-            nx = index % N;
-
-            int count = 0;      // 합쳐진 FireBall 의 개수
-            int sumMass = 0;    // FireBalls 의 질량 합
-            int sumSpeed = 0;   // FireBalls 의 속력 합
-            List<Integer> getDir = new ArrayList<>();  // FireBalls 의 방향들을 저장
-
-            // fireBalls 를 돌아보며 같은 index 에 위치한 FireBall 을 찾는다.
-            for(int j = 0; j <= fireBalls.size(); ++j){
-                if(fireBalls.isEmpty()) break;
-                FireBall now = fireBalls.poll();
-                // index 가 다르다면 Queue 의 맨 뒤로 다시 삽입
-                if(now.index != index) {
-                    fireBalls.offer(now);
-                    continue;
+                // 2-1. 같은 칸에 위치한 FireBall 하나로 합치기
+                int count = fireBall[y][x][0].size();        // 같은 위치에 있는 FireBall 의 개수
+                int sumMass = 0;                             // FireBalls 의 질량 합
+                int sumSpeed = 0;                            // FireBalls 의 속력 합
+                List<Integer> getDir = new ArrayList<>();    // FireBalls 의 방향들을 저장
+                for (FireBall fb : fireBall[y][x][0]) {
+                    sumMass += fb.m;
+                    sumSpeed += fb.s;
+                    getDir.add(fb.d);
                 }
 
-                // index 가 같다면 질량, 속도를 합하고, 방향을 저장
-                sumMass += now.m;
-                sumSpeed += now.s;
-                getDir.add(now.d);
-                ++count;
-            }
+                // 2-2. 새로운 FireBall 4개를 저장하기 위해 "합쳐진 FireBall 제거"
+                fireBall[y][x][0].clear();        // ArrayList 초기화
 
-            int setMass = sumMass / 5;        // 질량 설정
-            if(setMass == 0) continue;        // 규칙2-4. 질량이 0이면 소멸한다.
-            int setSpeed = sumSpeed / count;  // 속도 설정
+                int setMass = sumMass / 5;        // 질량 설정
+                if (setMass == 0) continue;       // 규칙2-4. 질량이 0이면 소멸한다.
+                int setSpeed = sumSpeed / count;  // 속도 설정
 
-            // 방향이 모두 같은지 확인
-            boolean checkDir = true;               // 방향이 모두 같다면 true, 아니면 false
-            boolean flag = getDir.get(0) % 2 == 1; // 홀수면 true, 짝수면 false
-            for(int dir : getDir){
-                boolean tmp = dir % 2 == 1;
-                if(flag != tmp){
-                    checkDir = false;
-                    break;
+                // 2-3. 방향이 모두 (홀수이거나 짝수) 혹은 (그렇지 않은 것)을 판별
+                boolean checkDir = true;               // 방향이 모두 같다면 true, 아니면 false
+                boolean flag = getDir.get(0) % 2 == 1; // 홀수면 true, 짝수면 false
+                for (int dir : getDir) {
+                    boolean tmp = dir % 2 == 1;
+                    if (flag != tmp) {
+                        checkDir = false;
+                        break;
+                    }
+                }
+
+                // checkDir 에 따른 방향 설정
+                int[] setDir;
+                if (checkDir) setDir = new int[]{0, 2, 4, 6};
+                else setDir = new int[]{1, 3, 5, 7};
+
+                // 4개의 새로운 FireBall 생성
+                for (int i = 0; i < 4; ++i) {
+                    fireBall[y][x][0].add(new FireBall(y, x, setMass, setSpeed, setDir[i]));
                 }
             }
-
-            // checkDir 에 따른 방향 설정
-            int[] setDir;
-            if(checkDir) setDir = new int[]{0, 2, 4, 6};
-            else setDir = new int[]{1, 3, 5, 7};
-
-            for(int i = 0; i < 4; ++i){
-                fireBalls.offer(new FireBall(index, ny, nx, setMass, setSpeed, setDir[i]));
-            }
-
-            countFireBall[index] = 4;
         }
     }
 
-    public static int getTotalMass(){
+    // 남아있는 FireBall 의 질량 합 구하기
+    public static int getTotalMass() {
         int sum = 0;
-        for(FireBall fb : fireBalls){
-            sum += fb.m;
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < N; x++) {
+                for (FireBall fb : fireBall[y][x][0])
+                    sum += fb.m;
+            }
         }
-
         return sum;
     }
 
     static class FireBall {
-        int index;
         int y;
         int x;
         int m;
         int s;
         int d;
 
-        public FireBall(int index, int y, int x, int m, int s, int d) {
-            this.index = index;
+        public FireBall(int y, int x, int m, int s, int d) {
             this.y = y;
             this.x = x;
             this.m = m;
             this.s = s;
             this.d = d;
-        }
-
-        @Override
-        public String toString() {
-            return "FireBall{" +
-                    "index=" + index +
-                    ", y=" + y +
-                    ", x=" + x +
-                    ", m=" + m +
-                    ", s=" + s +
-                    ", d=" + d +
-                    '}';
         }
     }
 }
