@@ -1,7 +1,5 @@
 package Category.BackTracking;
 
-import sun.lwawt.macosx.CSystemTray;
-
 import java.util.*;
 import java.io.*;
 
