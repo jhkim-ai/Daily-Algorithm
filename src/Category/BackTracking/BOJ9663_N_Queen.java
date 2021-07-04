@@ -14,9 +14,9 @@ public class BOJ9663_N_Queen {
         // 입력
         N = Integer.parseInt(br.readLine());
 
-        for(int i = 1; i <= N; ++i){
-            arr = new int[N+1];
-            arr[1] = i;
+        for(int i = 0; i < N; ++i){
+            arr = new int[N];
+            arr[0] = i;
             dfs(1);
         }
 
@@ -30,15 +30,15 @@ public class BOJ9663_N_Queen {
             return;
         }
 
-        for(int i = 1; i <= N; ++i){
-            arr[row+1] = i;
-            if(!isPossible(row+1)) continue;
+        for(int i = 0; i < N; ++i){
+            arr[row] = i;
+            if(!isPossible(row)) continue;
             dfs(row+1);
         }
     }
 
     public static boolean isPossible(int row){
-        for(int i = 1; i < row; ++i){
+        for(int i = 0; i < row; ++i){
             if(arr[i] == arr[row]) return false; // 같은 열일 경우
             if(Math.abs(i - row) == Math.abs(arr[i] - arr[row])) return false; // 대각선 위치
         }
