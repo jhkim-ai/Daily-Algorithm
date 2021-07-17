@@ -23,6 +23,7 @@ public class BOJ14567_선수과목 {
         Arrays.fill(arr, 1);
         arr[0] = 0;
 
+        // 선수과목 조건은 A < B 형태로만 주어진다.
         for (int m = 0; m < M; m++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
@@ -30,6 +31,7 @@ public class BOJ14567_선수과목 {
             subjects[m] = new Subject(a, b);
         }
 
+        // 정렬
         Arrays.sort(subjects);
 
         for(int m = 0; m < M; ++m){
@@ -48,8 +50,8 @@ public class BOJ14567_선수과목 {
     }
 
     static class Subject implements Comparable<Subject>{
-        int before;
-        int after;
+        int before; // a
+        int after; // b
 
         public Subject(int before, int after) {
             this.before = before;

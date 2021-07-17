@@ -30,6 +30,7 @@ public class BOJ14719_빗물 {
     public static void rain(){
         int left = 0;
         int right = W-1;
+
         for(int i = 0; i < W; ++i){
             // 오름차순
             if(arr[left] <= arr[i]){
