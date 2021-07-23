@@ -48,8 +48,8 @@ public class BOJ1041_주사위 {
 
         // N 층
         sum += sum3 * 4;
-        sum += (N - 2) * 4d * sum2;
-        sum += (N - 2) * (N - 2d) * sum1;
+        sum += (N - 2) * 4l * sum2;
+        sum += (N - 2) * (N - 2l) * sum1;
 
         // 주의!. N 을 parseInt 로 받으면 Integer 간의 곱으로 된 후 casting 되기 때문에 조심해야한다.
         // N 을 parseLong 으로 받던지, 계산할 때 리터럴 숫자 뒤에 d를 붙이던지 하자
