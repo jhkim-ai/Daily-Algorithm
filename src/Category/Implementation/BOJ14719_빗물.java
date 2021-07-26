@@ -26,13 +26,16 @@ public class BOJ14719_빗물 {
         rain();
         System.out.println(count);
     }
-    // 3 4 3 3
+
+    // 1. 내 블럭보다 높은 위치의 블럭을 찾자
+    // 2. 찾았다면, 내 블럭과 찾은 높은 위치의 블럭 사이의 남은 블럭들을 내 블럭의 높이와 빼자
+    //    count += [ 내 블럭 - 사이의 블럭 ]
     public static void rain(){
         int left = 0;
         int right = W-1;
 
         for(int i = 0; i < W; ++i){
-            // 오름차순
+            // --> 오른쪽으로 탐색
             if(arr[left] <= arr[i]){
                 for(int j = left; j< i; ++j){
                     count += arr[left] - arr[j];
@@ -43,7 +46,7 @@ public class BOJ14719_빗물 {
         }
 
         for(int i = W-2; i >= 0; --i){
-            // 내림차순
+            // <-- 왼쪽으로 탐색
             if(arr[right] <= arr[i]){
                 for(int j = right; j > i; --j){
                     if(visited[j]) continue;

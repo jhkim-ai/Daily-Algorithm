@@ -23,7 +23,7 @@ public class BOJ14567_선수과목 {
         Arrays.fill(arr, 1);
         arr[0] = 0;
 
-        // 선수과목 조건은 A < B 형태로만 주어진다.
+        // 1. 선수과목 조건은 A < B 형태로만 주어진다.
         for (int m = 0; m < M; m++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
@@ -31,9 +31,10 @@ public class BOJ14567_선수과목 {
             subjects[m] = new Subject(a, b);
         }
 
-        // 정렬
+        // 2. 정렬
         Arrays.sort(subjects);
 
+        // 3. 현재 과목의 수강 가능한 학기 = MAX(선수과목들 + 1)
         for(int m = 0; m < M; ++m){
             Subject subject = subjects[m];
             int a = subject.before;
