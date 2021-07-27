@@ -1,4 +1,4 @@
-package Category.Graph;
+package Category.DFS_BFS;
 
 import java.io.*;
 import java.util.*;
