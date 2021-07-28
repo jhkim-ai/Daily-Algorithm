@@ -13,7 +13,6 @@ public class 비밀지도 {
         String[] res = new String[n];
         for(int i = 0; i < n; ++i){
             res[i] = Integer.toBinaryString(arr1[i] | arr2[i]);
-
             for(int k = 0; k < n -res[i].length(); ++k) sb.append(" ");
             for(int j = 0; j < res[i].length(); ++j){
                 if(res[i].charAt(j) == '1') sb.append("#");
