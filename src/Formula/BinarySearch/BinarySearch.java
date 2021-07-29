@@ -1,4 +1,4 @@
-package Formula;
+package Formula.BinarySearch;
 
 import java.util.Arrays;
 
