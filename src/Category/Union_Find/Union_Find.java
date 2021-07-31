@@ -23,7 +23,7 @@ public class Union_Find {
     static int findSet(int a){
         if(root[a] == a)
             return a;
-        return root[a] = findSet(a);
+        return root[a] = findSet(root[a]);
     }
 
     // 3. Union : 집합 합치기
