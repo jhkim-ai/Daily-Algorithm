@@ -63,10 +63,12 @@ public class BOJ4991_로봇청소기 {
         System.out.print(sb);
     }
 
+    // BFS
     public static int bfs(int startY, int startX) {
         Queue<Point> q = new LinkedList<>();
         boolean[][][] visited = new boolean[H][W][1 << totalDust];
-        int distance = 0;
+        int distance = 0; // 최단 거리
+
         q.offer(new Point(startY, startX, 0));
         visited[startY][startX][0] = true;
 
@@ -75,6 +77,7 @@ public class BOJ4991_로봇청소기 {
             for (int s = 0; s < size; ++s) {
                 Point now = q.poll();
 
+                // 모든 곳을 청소했다면, 끝
                 if (now.dust == (1 << totalDust) - 1) {
                     return distance;
                 }
@@ -83,30 +86,33 @@ public class BOJ4991_로봇청소기 {
                     int ny = now.y + dy[d];
                     int nx = now.x + dx[d];
                     int dust = now.dust;
+
+                    // 장애물, 범위 밖, 지났던 곳 등을 예외 처리
                     if (!isIn(ny, nx) || visited[ny][nx][dust] || map[ny][nx] == -2) {
                         continue;
                     }
 
+                    // 더러운 곳이라면, BitMasking 을 이용하여 checking
                     if (map[ny][nx] >= 0) {
                         dust = dust | (1 << map[ny][nx]);
                     }
 
+                    // 새로운 위치를 Queue에 삽입
                     visited[ny][nx][dust] = true;
                     q.offer(new Point(ny, nx, dust));
                 }
             }
             ++distance;
         }
-
         return -1;
     }
 
+    // 범위 체크
     public static boolean isIn(int y, int x) {
         return y >= 0 && x >= 0 && y < H && x < W;
     }
 
     static class Point {
-
         int y;
         int x;
         int dust;
