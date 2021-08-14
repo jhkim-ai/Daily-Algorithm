@@ -53,7 +53,7 @@ public class BOJ4991_로봇청소기 {
 
     public static int bfs(int startY, int startX){
         Queue<Point> q = new LinkedList<>();
-
+        q.offer(new Point(startY, startX));
 
         return -1;
     }
