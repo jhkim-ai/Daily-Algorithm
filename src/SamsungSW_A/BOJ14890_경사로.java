@@ -24,19 +24,19 @@ public class BOJ14890_경사로 {
                 map[y][x] = Integer.parseInt(st.nextToken());
             }
         }
-
+        // 5가지의 경우의 수 ( 같은 높이, 위&위, 위&아래, 아래&위, 아래&아래 )
+        // 아래&위 의 경우를 주의.
         for (int i = 0; i < N; ++i) {
-            if (rowCheck(i)) {
+            if (rowCheck(i)) { // Row 체크
                 ++ans;
             }
-            if (colCheck(i)) {
+            if (colCheck(i)) { // Column 체크
                 ++ans;
             }
         }
         System.out.println(ans);
     }
 
-    // Row 체크
     public static boolean rowCheck(int y) {
         int start = map[y][0];
         int count = 1;
@@ -76,7 +76,6 @@ public class BOJ14890_경사로 {
         }
     }
 
-    // Column 체크
     public static boolean colCheck(int x) {
         int start = map[0][x];
         int count = 1;

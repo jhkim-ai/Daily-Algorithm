@@ -1,4 +1,4 @@
-package Category.PrefixSum;
+package 다시풀기;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +48,6 @@ public class BOJ11660_구간합구하기5_2 {
 //            for(int x = 0 ; x < N; ++x){
 //                sum1[y*N + x%N] = Integer.parseInt(st.nextToken()) + before;
 //                before = sum1[y*N + x%N];
-//            }
 //        }
 //        ---- Solution 1
 //        for(int y = 0; y < N; ++y){
