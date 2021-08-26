@@ -1,7 +1,9 @@
+package 다시풀기;
+
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class BOJ1806_부분합 {
 
     private static int N, S, ans;
     private static int[] arr;

@@ -1,18 +1,21 @@
-import java.io.*;
-import java.util.*;
+package Category.Two_Pointer;
 
-public class Main {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-    private static int N, S, ans;
+public class BOJ2003_수들의합2 {
+
+    private static int N, M, ans;
     private static int[] arr;
 
-    // 1806 부분합
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 
         N = Integer.parseInt(st.nextToken());
-        S = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
         arr = new int[N];
 
         st = new StringTokenizer(br.readLine(), " ");
@@ -20,29 +23,22 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        ans = Integer.MAX_VALUE;
         int left = 0;
         int right = 0;
         int sum = 0;
-
-        // S 이상이 되는 최소의 길이
         while (true) {
-            if (sum >= S) {
-                ans = Math.min(ans, right - left);
+            if (sum == M) {
+                ++ans;
                 sum -= arr[left++];
-            } else if (right == N) {
+            } else if (sum > M) {
+                sum -= arr[left++];
+            } else if (right == N){
                 break;
             } else {
                 sum += arr[right++];
             }
         }
 
-        if (ans > 100000) {
-            ans = 0;
-        }
-
         System.out.println(ans);
     }
 }
-
-
