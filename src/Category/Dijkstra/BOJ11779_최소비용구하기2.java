@@ -37,28 +37,28 @@ public class BOJ11779_최소비용구하기2 {
     }
 
     public static void dijkstra(int from, int to){
-        PriorityQueue<Bus> pq = new PriorityQueue<>(); // pq 를 이용한 Dijkstra
-        // 경로 역추적을 위한 저장소
-        int[] beforeNode = new int[N+1];
+        PriorityQueue<Bus> pq = new PriorityQueue<>(); // pq 를 이용한 Dijkstra (NlogN)
 
-        // 초기화
-        boolean[] visited = new boolean[N+1];
-        int[] dist = new int[N+1];
-        Arrays.fill(dist, INF);
+        // 1. 초기화
+        int[] beforeNode = new int[N+1];      // 경로를 역추적하기 위한 저장소
+        boolean[] visited = new boolean[N+1]; // 방문 체크
+        int[] dist = new int[N+1];            // 시작 Node 로부터 각 Node 까지의 거리 비용
+        Arrays.fill(dist, INF);               // INF(경로가 없다는 것을 의미) 로 초기화
 
-        dist[from] = 0;
-        pq.offer(new Bus(from, 0));
+        dist[from] = 0;                       // 시작점은 비용이: 0
+        pq.offer(new Bus(from, 0));      // 시작점을 pq에 삽입
 
+        // 2. 최단 거리 비용 찾기
         while(!pq.isEmpty()){
-            Bus nowBus = pq.poll();
-            int nowNode = nowBus.to;
+            Bus nowBus = pq.poll();            // pq 에 의하여 거리 비용이 가장 작은 것부터 탐색
+            int nowNode = nowBus.to;           // 현재 Node
 
-            if(visited[nowNode]) { // 이미 방문했다면 pass
+            if(visited[nowNode]) { // 현재 Node 가 이미 방문(거리 계산이 끝난 곳)했다면: pass
                 continue;
             }
-            visited[nowNode] = true;
+            visited[nowNode] = true;            // 방문 체크
 
-            for(Bus nextBus : adjList[nowNode]){
+            for(Bus nextBus : adjList[nowNode]){// 인접 List
                 if(dist[nextBus.to] > dist[nowNode] + nextBus.cost){
                     dist[nextBus.to] = dist[nowNode] + nextBus.cost;
                     pq.offer(new Bus(nextBus.to, dist[nextBus.to]));
