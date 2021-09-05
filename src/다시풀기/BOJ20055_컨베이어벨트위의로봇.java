@@ -1,4 +1,4 @@
-package SamsungSW_A;
+package 다시풀기;
 
 import java.io.BufferedReader;
 import java.io.IOException;
