@@ -82,21 +82,19 @@ public class BOJ3190_뱀 {
         }
 
         headVal++;
+        headY = ny;
+        headX = nx;
 
         // 사과가 있을 때
         if(map[ny][nx] == -2){
             map[ny][nx] = headVal; // 머리 전진
-            headY = ny;
-            headX = nx;
             return true;
         }
 
         // 머리 전진
         map[ny][nx] = headVal;
-        headY = ny;
-        headX = nx;
 
-        // 꼬리 전진진
+        // 꼬리 전진
        for (int dir = 0; dir < 4; dir++) {
             int ty = tailY + dy[dir];
             int tx = tailX + dx[dir];
