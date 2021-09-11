@@ -3,45 +3,19 @@ import java.util.*;
 
 public class Main {
 
-    private static int N, S, ans;
-    private static int[] arr;
-
-    // 1806 부분합
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        int N = Integer.parseInt(br.readLine());
+        int K = Integer.parseInt(br.readLine());
+        int[] arr = new int[N*N];
 
-        N = Integer.parseInt(st.nextToken());
-        S = Integer.parseInt(st.nextToken());
-        arr = new int[N];
-
-        st = new StringTokenizer(br.readLine(), " ");
-        for (int i = 0; i < N; ++i) {
-            arr[i] = Integer.parseInt(st.nextToken());
+        for(int i = 0; i < arr.length; ++i){
+            int row = i / N + 1;
+            int col = i % N + 1;
+            arr[i] = row*col;
         }
-
-        ans = Integer.MAX_VALUE;
-        int left = 0;
-        int right = 0;
-        int sum = 0;
-
-        // S 이상이 되는 최소의 길이
-        while (true) {
-            if (sum >= S) {
-                ans = Math.min(ans, right - left);
-                sum -= arr[left++];
-            } else if (right == N) {
-                break;
-            } else {
-                sum += arr[right++];
-            }
-        }
-
-        if (ans > 100000) {
-            ans = 0;
-        }
-
-        System.out.println(ans);
+        Arrays.sort(arr);
+        System.out.println(arr[K-1]);
     }
 }
 
