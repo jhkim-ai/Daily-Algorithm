@@ -38,7 +38,7 @@ public class Solution6 {
             }
         }
 
-        print();
+        // print();
     }
 
     public static int getBuilding(){

@@ -74,6 +74,7 @@ public class Solution3 {
         System.out.println(Arrays.toString(resultFees));
     }
 
+    // 차 번호별 누적 주차 시간 구하기
     public static int getParkingTimeByCarNumber(List<String> record){
         int totalMinute = 0;
         int size = record.size();

@@ -13,8 +13,8 @@ public class Solution4 {
     private static int[] tmpLionInfo;
 
     public static void main(String[] args) {
-        n = 2;
-        info = new int[]{2, 0, 0, 0, 0, 0, 0, 0, 3, 4, 3};
+        n = 10;
+        info = new int[]{0,0,0,0,0,0,0,0,3,4,3};
 
         N = n;
         apeachInfo = info;
