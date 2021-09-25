@@ -1,187 +1,191 @@
 package SamsungSW_A;
 
-import java.util.*;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class BOJ20058_마법사상어와파이어스톰 {
 
-    public static int[] dy = {-1, 1, 0, 0};
-    public static int[] dx = {0, 0, -1, 1};
+    private static final int[] dy = {-1, 1, 0, 0};
+    private static final int[] dx = {0, 0, -1, 1};
 
-    public static int N, Q, command, L, ans, count, idx;
-    public static int[] commands;
-    public static boolean[][] visited;
-    public static int[][] map;
+    private static int N, Q, mapSize;
+    private static int[][] map;
+    private static boolean[][] visited;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 
-        N = (int) Math.pow(2, Integer.parseInt(st.nextToken()));
+        N = Integer.parseInt(st.nextToken());
         Q = Integer.parseInt(st.nextToken());
-        map = new int[N][N];
-        visited = new boolean[N][N];
-        commands = new int[Q];
-        ans = Integer.MIN_VALUE;
+        mapSize = (int)Math.pow(2, N);
+        map = new int[mapSize][mapSize];
 
-        // map 입력
-        for (int y = 0; y < N; y++) {
-            st = new StringTokenizer(br.readLine());
-            for (int x = 0; x < N; x++) {
+        for (int y = 0; y < mapSize; y++) {
+            st = new StringTokenizer(br.readLine(), " ");
+            for (int x = 0; x < mapSize; x++) {
                 map[y][x] = Integer.parseInt(st.nextToken());
             }
         }
 
-        // 명령어 입력
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < Q; i++) {
-            commands[i] = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine(), " ");
+        while(st.hasMoreTokens()){
+            int L = Integer.parseInt(st.nextToken());
+            int partialGridLen = (int)Math.pow(2, L);
+            divide(0, 0, partialGridLen, mapSize);
+            melt();
         }
 
-        // 명령어만큼 실행
-        for (int c : commands) {
-            idx = 0;
-            command = c; // 명령어 저장
-            fireStorm(); // 파이어스톰 실행
-            searchIce(); // 4방향 중 인접한 칸의 얼음이 2개 이하면, -1
-        }
+        // 예외 상황 Check
+        if(check()) {
+            int cntIce = getIceCount(); // Step 4. 남은 얼음의 양 구하기
+            int maxArea = Integer.MIN_VALUE; // Step 5. 가장 큰 얼음 덩어리 구하기
+            visited = new boolean[mapSize][mapSize];
 
-        // 남은 얼음의 총 개수
-        int totalIce = getTotalIce();
-        sb.append(totalIce).append("\n");
-
-        // 연결된 얼음 덩어리 중 가장 큰 덩어리 찾기
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < N; x++) {
-                if(visited[y][x] || map[y][x] == 0) continue;
-                visited[y][x] = true;
-                count = 0;
-                getPartition(y, x);
-                ans = Math.max(count, ans);
+            for (int y = 0; y < mapSize; y++) {
+                for (int x = 0; x < mapSize; x++) {
+                    if (!visited[y][x] && map[y][x] != 0) {
+                        visited[y][x] = true;
+                        maxArea = Math.max(maxArea, getIceArea(y, x)); // dfs 탐색 후, 최댓값 비교
+                    }
+                }
             }
+
+            System.out.println(cntIce);
+            System.out.println(maxArea);
+        } else {
+            System.out.println(0);
+            System.out.println(0);
         }
-        sb.append(ans);
-
-        System.out.println(sb);
     }
 
-    // FireStorm 실행
-    public static void fireStorm() {
-        L = (int) Math.pow(2, command); // 분할 Size 구하기
-        divide(N, 0, 0);          // 1. 분할 시작
-    }
-
-    // 1. 분할
-    public static void divide(int num, int y, int x) {
-
-        // 1-2. 분할 Size 에 도달 시, 작동
-        if (num == L) {
-            // 2. 행렬 회전
-            circulation(y, x);
+    // Step 1. 격자 구하기 (분할 정복)
+    public static void divide(int y, int x, int targetLen, int len){
+        if(targetLen == len){
+            // Step 2. 시계 방향으로 90도 회전
+            clockwise(y, x, targetLen);
             return;
         }
 
-        // 1-1. 분할
-        int n = num / 2;
-        divide(n, y, x);
-        divide(n, y + n, x);
-        divide(n, y, x + n);
-        divide(n, y + n, x + n);
+        int half = len / 2;
+        divide(y, x, targetLen, half);
+        divide(y, x + half, targetLen, half);
+        divide(y + half, x, targetLen, half);
+        divide(y + half, x + half, targetLen, half);
     }
 
-    // 2. 행렬 회전 : 각 분할된 부분행렬들을 명령어에 맞게 회전
-    public static void circulation(int y, int x) {
-        List<Integer>[] arrList = new ArrayList[L];
-
-        // ArrayList 배열 초기화
-        for (int i = 0; i < L; ++i) {
-            arrList[i] = new ArrayList<>();
+    // Step 2. 시계 방향으로 90 도 회전
+    public static void clockwise(int startY, int startX, int len){
+        List<Integer>[] tmpLists = new List[len]; // row 별로 임시 Data 저장
+        for (int i = 0; i < len; i++) {
+            tmpLists[i] = new ArrayList<>();
         }
 
-        // 열을 배열에 저장
-        int idx = 0;
-        for (int nx = x; nx < x + L; nx++) {
-            for (int ny = y; ny < y + L; ny++) {
-                arrList[idx].add(map[ny][nx]);
+        for (int y = startY, idx = 0; y < startY + len; y++, idx++) {
+            for (int x = startX; x < startX + len; x++) {
+                tmpLists[idx].add(map[y][x]);
             }
-            ++idx;
         }
 
-        // 재배열
-        int i = 0;
-        for (int ny = y; ny < y + L; ny++) {
-            int j = L - 1;
-            for (int nx = x; nx < x + L; nx++) {
-                map[ny][nx] = arrList[i].get(j);
-                --j;
+        // 배열 값 갱신 (회전 완료)
+        for (int x = startX, idx = len-1; x < startX + len; x++, idx--) {
+            for (int y = startY, elemIdx = 0; y < startY + len; y++, elemIdx++) {
+                map[y][x] = tmpLists[idx].get(elemIdx);
             }
-            ++i;
         }
     }
 
-    // 3. 감소할 얼음 찾기 : 얼음이 2칸 이하로 인접해있다면, -1 한다.
-    public static void searchIce(){
-        // 앞에 것이 0이 되면, 뒤에도 영향을 미치는 것이 아님
-        // 현재 순간을 기준으로 해야한다. => queue 로 관리
-        Queue<int[]> q = new LinkedList<>();
+    // Step 3. 얼음양 줄이기
+    public static void melt(){
+        // 얼음을 한 번에 녹이기 위해 "녹을 얼음의 위치" 저장소
+        List<Integer> idxToMelt = new ArrayList<>();
 
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < N; x++) {
-                int noIce = 0;
+        for (int y = 0; y < mapSize; y++) {
+            xLoop:
+            for (int x = 0; x < mapSize; x++) {
+                if(map[y][x] <= 0){ // 얼음이 없다면 pass
+                    continue;
+                }
+                int count = 4;
                 for (int d = 0; d < 4; d++) {
                     int ny = y + dy[d];
                     int nx = x + dx[d];
-
-                    if(!isIn(ny, nx) || map[ny][nx] == 0){
-                        noIce++;
-                        continue;
+                    if(!isIn(ny , nx) || map[ny][nx] == 0){ // 얼음과 인접하지 않을 경우 count 감소
+                        count--;
+                    }
+                    if(count < 3){ // 만약 인접한 얼음의 양이 2개 이하이면, 이 칸은 녹아야 한다.
+                        idxToMelt.add(y * mapSize + x);
+                        continue xLoop; // 다음 탐색
                     }
                 }
-                if(noIce >= 2) q.offer(new int[]{y, x});
             }
         }
 
-        while(!q.isEmpty()){
-            int[] now = q.poll();
-            if(map[now[0]][now[1]] == 0) continue;
-            map[now[0]][now[1]]--;
+        // 얼음을 한 번에 녹이기
+        for(int idx : idxToMelt){
+            int y = idx / mapSize;
+            int x = idx % mapSize;
+            map[y][x]--;
         }
     }
 
-    // 4. 남은 얼음의 총 개수
-    public static int getTotalIce(){
+    // Step 4. 남은 얼음의 양 구하기 (total)
+    public static int getIceCount(){
         int sum = 0;
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < N; x++) {
-                if(map[y][x] > 0) sum += map[y][x];
+        for (int y = 0; y < mapSize; y++) {
+            for (int x = 0; x < mapSize; x++) {
+               sum += map[y][x];
             }
         }
         return sum;
     }
 
-    // 5. 남은 얼음에서 연결된 것 중, 가장 큰 얼음 덩어리 (dfs)
-    public static void getPartition(int y, int x){
-        count++;
+    // Step 5. 연결된 가장 큰 얼음 덩어리 구하기(dfs)
+    public static int getIceArea(int y, int x){
+        int cnt = 1;
 
         for (int d = 0; d < 4; d++) {
             int ny = y + dy[d];
             int nx = x + dx[d];
-            if(!isIn(ny, nx) || visited[ny][nx] || map[ny][nx] == 0) continue;
+            // (범위 밖 + 이미 방문 + 얼음이 없는 곳) 일 경우 pass
+            if(!isIn(ny, nx) || visited[ny][nx] || map[ny][nx] == 0){
+                continue;
+            }
             visited[ny][nx] = true;
-            getPartition(ny, nx);
+            cnt += getIceArea(ny, nx);
         }
+
+        return cnt;
     }
 
-    // 배열 범위 확인
+    // Step 6. [예외 상황] 얼음 덩어리가 없는 경우 0 출력
+    public static boolean check(){
+
+        for (int y = 0; y < mapSize; y++) {
+            for (int x = 0; x < mapSize; x++) {
+                if(map[y][x] > 0){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // 배열 범위 검사
     public static boolean isIn(int y, int x){
-        return y >= 0 && x >= 0 && y < N && x < N;
+        return y >= 0 && x >= 0 && y < mapSize && x < mapSize;
     }
 
-    public static void print() {
-        System.out.println("==============");
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < N; x++) {
+    public static void print(){
+        System.out.println("================");
+        for (int y = 0; y < mapSize; y++) {
+            for (int x = 0; x < mapSize; x++) {
                 System.out.print(map[y][x] + " ");
             }
             System.out.println();

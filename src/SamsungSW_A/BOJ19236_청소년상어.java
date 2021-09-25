@@ -1,4 +1,4 @@
-package SamsungSW_A.삼성_21년_하반기_준비;
+package SamsungSW_A;
 
 import java.io.BufferedReader;
 import java.io.IOException;
