@@ -1,4 +1,4 @@
-package KaKao_코딩테스트;
+package KaKao_기출문제;
 
 import java.util.*;
 
