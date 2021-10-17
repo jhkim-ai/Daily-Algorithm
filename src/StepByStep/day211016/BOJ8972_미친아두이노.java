@@ -159,7 +159,7 @@ public class BOJ8972_미친아두이노 {
         while(iterator.hasNext()){
             Point arduino = iterator.next();
             int locIdx = arduino.y * N + arduino.x;
-            // System.out.println(locIdx);
+
             if(mapArduino.containsKey(locIdx)){
                 setDeleteArduinoes.add(arduino.idx);
                 setDeleteArduinoes.add(mapArduino.get(locIdx));
