@@ -1,6 +1,5 @@
-package StepByStep.day210626;
+package StepByStep._2021.day210626;
 
-import java.util.*;
 import java.io.*;
 
 public class BOJ6137_문자열생성 {

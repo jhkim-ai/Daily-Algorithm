@@ -1,6 +1,5 @@
-package StepByStep.day210406;
+package StepByStep._2021.day210406;
 
-import java.util.*;
 import java.io.*;
 
 public class BOJ16432_떡장수와호랑이 {

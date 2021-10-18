@@ -1,4 +1,4 @@
-package StepByStep.day211106;
+package StepByStep._2021.day211106;
 
 import java.io.BufferedReader;
 import java.io.IOException;

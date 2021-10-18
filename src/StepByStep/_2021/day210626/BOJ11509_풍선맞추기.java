@@ -1,7 +1,4 @@
-package StepByStep.day210626;
-
-import java.util.*;
-import java.io.*;
+package StepByStep._2021.day210626;
 
 public class BOJ11509_풍선맞추기 {
 

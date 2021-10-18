@@ -1,6 +1,5 @@
-package StepByStep.day210416;
+package StepByStep._2021.day210416;
 
-import java.util.*;
 import java.io.*;
 
 public class BOJ1747_소수팰린드롬 {

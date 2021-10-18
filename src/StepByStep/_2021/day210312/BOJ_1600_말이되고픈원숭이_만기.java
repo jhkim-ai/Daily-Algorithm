@@ -1,9 +1,7 @@
 // https://www.acmicpc.net/problem/1600
 // 말이 되고픈 원숭이
 // bfs
-package StepByStep.day210312;
-
-import sun.net.sdp.SdpSupport;
+package StepByStep._2021.day210312;
 
 import java.io.*;
 import java.util.*;

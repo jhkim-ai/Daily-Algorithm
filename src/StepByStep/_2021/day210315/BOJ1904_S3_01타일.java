@@ -1,6 +1,5 @@
-package StepByStep.day210315;
+package StepByStep._2021.day210315;
 
-import java.util.*;
 import java.io.*;
 
 public class BOJ1904_S3_01타일 {

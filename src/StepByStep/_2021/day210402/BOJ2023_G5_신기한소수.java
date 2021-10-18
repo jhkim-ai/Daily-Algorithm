@@ -1,6 +1,5 @@
-package StepByStep.day210402;
+package StepByStep._2021.day210402;
 
-import java.util.*;
 import java.io.*;
 
 public class BOJ2023_G5_신기한소수 {

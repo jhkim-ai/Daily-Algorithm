@@ -1,6 +1,5 @@
-package StepByStep.day210501;
+package StepByStep._2021.day210501;
 
-import java.util.*;
 import java.io.*;
 
 public class BOJ16916_부분문자열 {

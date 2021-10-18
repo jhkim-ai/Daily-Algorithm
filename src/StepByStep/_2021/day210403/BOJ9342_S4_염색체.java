@@ -1,6 +1,5 @@
-package StepByStep.day210403;
+package StepByStep._2021.day210403;
 
-import java.util.*;
 import java.io.*;
 
 public class BOJ9342_S4_염색체 {

@@ -1,7 +1,6 @@
-package StepByStep.day210315;
+package StepByStep._2021.day210315;
 
 import java.io.*;
-import java.util.*;
 
 public class BOJ1003_S3_피보나치함수 {
 
