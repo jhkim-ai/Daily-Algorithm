@@ -43,12 +43,15 @@ public class BOJ21609_상어중학교 {
     }
 
     public static boolean run() {
+
         // Step 1. 가장 큰 블록 그룹 찾기
         maxCntBlock = Integer.MIN_VALUE; // 가장 큰 블록 그룹의 블록 수
         maxCntRainbowBlock = Integer.MIN_VALUE;
         maxRow = Integer.MIN_VALUE;
         maxCol = Integer.MIN_VALUE;
         boolean[][] blockGroup = null;
+
+        // 가장 큰 블록 그룹 구하기
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < N; x++) {
                 if (map[y][x] >= 1) {
@@ -67,7 +70,6 @@ public class BOJ21609_상어중학교 {
 
         // Step 2. 그룹의 모든 블록 제거 + B^2 점 획득
         removeBlockGroup(blockGroup);
-        // System.out.println(maxCntBlock * maxCntBlock);
         score += maxCntBlock * maxCntBlock;
 
         System.out.println("======================");
@@ -79,11 +81,13 @@ public class BOJ21609_상어중학교 {
         System.out.println("중력");
         runGravity();
         print();
+
         // Step 4. 90도 반시계 회전
         System.out.println("======================");
         System.out.println("회전");
         rotate();
         print();
+
         // Step 5. 중력 작용
         System.out.println("======================");
         System.out.println("중력");
@@ -108,7 +112,7 @@ public class BOJ21609_상어중학교 {
                 int ny = now.y + dy[d];
                 int nx = now.x + dx[d];
 
-                // 범위 밖 + 검은색 블록일 경우 Pass
+                // (범위 밖 + 검은색 블록 + 이미 방문)일 경우 Pass
                 if (!isIn(ny, nx) || isBlack(ny, nx) || visited[ny][nx]) {
                     continue;
                 }
@@ -138,6 +142,8 @@ public class BOJ21609_상어중학교 {
         outer:
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
+                // 이중 for 문을 돌며
+                // Rainbow Block 이 아니면서 가장 먼저 만나는 색깔 Block 이 기준 Block 이 된다.
                 if (visited[i][j] && map[i][j] != 0) {
                     row = i;
                     col = j;
@@ -146,18 +152,18 @@ public class BOJ21609_상어중학교 {
             }
         }
 
-        if (maxCntBlock < cntBlock) { // 가장 큰 블록 그룹
+        if (maxCntBlock < cntBlock) { // 가장 큰 블록 그룹.
             maxCntBlock = cntBlock;
             maxRow = row;
             maxCol = col;
             maxCntRainbowBlock = rainbowBlock;
-        } else if (maxCntBlock == cntBlock) { // 가장 큰 블록 그룹이 여러개일 경우
-            if (maxCntRainbowBlock < rainbowBlock) { // rainbow block 이 많은 그룹으로
+        } else if (maxCntBlock == cntBlock) {        // 가장 큰 블록 그룹이 여러개일 경우,
+            if (maxCntRainbowBlock < rainbowBlock) { // rainbow block 이 많은 그룹으로 선택.
                 maxCntRainbowBlock = rainbowBlock;
                 maxRow = row;
                 maxCol = col;
-            } else if (maxCntRainbowBlock == rainbowBlock) { // rainbow Block 수가 같을 시
-                if (maxRow < row) {                          // 기준 Block이 행이 큰 그룹으로
+            } else if (maxCntRainbowBlock == rainbowBlock) { // rainbow Block 수가 같을 시,
+                if (maxRow < row) {                          // 기준 Block 의 행이 큰 그룹으로
                     maxRow = row;
                     maxCol = col;
                 } else if (maxRow == row) { // 기준 Block 의 행이 같을 시,
@@ -183,17 +189,18 @@ public class BOJ21609_상어중학교 {
         for (int y = 0; y < N; y++) {
             for (int x = 0; x < N; x++) {
                 if (blockGroup[y][x]) {
-                    map[y][x] = -2;
+                    map[y][x] = -2; // -2 = 빈 공간
                 }
             }
         }
     }
 
     // 중력 작용 (가장 어려운 부분)
+    // Idea. 밑바닥을 나타내는 변수를 만들어 밑바닥을 갱신하고 다른 색깔 Block 들은 이동하자.
     public static void runGravity() {
         for (int x = 0; x < N; ++x) {
-            int bottom = N; // Idea. 내려올 수 있는 밑바닥을 갱신
-            for (int y = N - 1; y >= 0; --y) { // Black Block 시, 밑바닥을 y로 갱신
+            int bottom = N;
+            for (int y = N - 1; y >= 0; --y) { // 검정색 Block 시, 밑바닥을 현 위치(y)로 갱신
                 if (isBlack(y, x)) {
                     bottom = y;
                     continue;
@@ -202,7 +209,7 @@ public class BOJ21609_상어중학교 {
                     continue;
                 }
 
-                if (map[y][x] >= 0) { // Color Block은 설정된 bottom -1 로 이동
+                if (map[y][x] >= 0) { // Color Block 은 설정된 밑바닥 위[bottom -1]로 이동
                     if (bottom - 1 != y) {
                         map[bottom - 1][x] = map[y][x];
                         map[y][x] = -2;
@@ -217,17 +224,17 @@ public class BOJ21609_상어중학교 {
     public static void rotate() {
         List<Integer>[] rows = new ArrayList[N]; // 임시 List 에 다 저장 후, map 에 덮어쓰기
 
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) { // 임시 List 생성
             rows[i] = new ArrayList<>();
         }
 
-        for (int y = 0; y < N; ++y) {
+        for (int y = 0; y < N; ++y) { // 임시 List 에 row 별로 저장
             for (int x = 0; x < N; x++) {
                 rows[y].add(map[y][x]);
             }
         }
 
-        for (int x = 0; x < N; x++) {
+        for (int x = 0; x < N; x++) { // 임시 List 를 col 별로 아래에서 위로 map 갱신
             for (int y = N - 1; y >= 0; --y) {
                 map[y][x] = rows[x].get(N - 1 - y);
             }
