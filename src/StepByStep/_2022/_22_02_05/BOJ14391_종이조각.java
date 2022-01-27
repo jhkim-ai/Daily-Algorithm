@@ -40,15 +40,15 @@ public class BOJ14391_종이조각 {
         for(int i = 1; i < N; ++i){
             sizes[M+i-1] = -(i+1);
         }
-//        System.out.println(Arrays.toString(sizes));
+        System.out.println(Arrays.toString(sizes));
         dfs(0, 0, 0);
         System.out.println(ans);
     }
 
     public static void dfs(int y, int x, int sum){
         if(y == N-1 && x == M){
-//            System.out.println(list);
-//            System.out.println("=================================");
+            System.out.println(list);
+            System.out.println("=================================");
             ans = Math.max(ans, sum);
             return;
         }
