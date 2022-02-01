@@ -64,6 +64,7 @@ public class _3_BOJ3190_뱀 {
             if(c == 'L') d = (d + 3) % 4;
             else d = (d + 1) % 4;
         }
+
         System.out.println(time);
     }
 
