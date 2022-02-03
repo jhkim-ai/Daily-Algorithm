@@ -1,4 +1,4 @@
-package Category.Implementation;
+package Category.DataStructure;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,10 +71,7 @@ public class BOJ13335_트럭 {
                     cntEndTruck++;
                 }
             }
-            System.out.println(time + ": =============");
-            System.out.println("다리: " + qBridge);
-            System.out.println("남은 트럭: " + qTrucks);
-            System.out.println(cntEndTruck);
+
             if(cntEndTruck == N) return;      // 모두 다리를 넘어왔다면 종료
         }
     }
