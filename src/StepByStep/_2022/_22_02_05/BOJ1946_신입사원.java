@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class BOJ1946_신입사원 {
+
     private static int N;
     private static Grade[] grades;
 
