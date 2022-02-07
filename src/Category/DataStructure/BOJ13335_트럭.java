@@ -48,32 +48,40 @@ public class BOJ13335_트럭 {
 
         while(true){
             ++time;
-            int nextSumWeight = sumWeight - qBridge.peek(); // 다음 시간에 다리에 있는 트럭들의 무게 합
+
+            int in = 0;
+            int out = qBridge.poll();
+
+            if(isTruck(out)) passByBridge(out);
+
+            int nextSumWeight = sumWeight;
             if(!qTrucks.isEmpty())
                 nextSumWeight += qTrucks.peek();
 
-            if(isOverWeight(nextSumWeight)) { // 다리에 무게가 over 된다면 단순히 움직이기만
-                int out = qBridge.poll();
-                if(out != 0) {
-                    cntEndTruck++;
-                    sumWeight -= out;
-                }
-                qBridge.offer(0);
-                continue;
-            } else {
-                int in = 0;
-                if(!qTrucks.isEmpty()) in = qTrucks.poll();
-                sumWeight += in;
+            // 다음 트럭들의 무게의 합이 다리의 무게보다 over 된다면 움직이기만
+            if(isOverWeight(nextSumWeight)) {
                 qBridge.offer(in);
-                int out = qBridge.poll();
-                if(out != 0){
-                    sumWeight -= out;
-                    cntEndTruck++;
-                }
+                continue;
             }
+
+            // 다리가 무게를 버틸 수 있다면, 다리에 truck 진입
+            if(!qTrucks.isEmpty()) in = qTrucks.poll();
+            qBridge.offer(in);
+            sumWeight += in;
 
             if(cntEndTruck == N) return;      // 모두 다리를 넘어왔다면 종료
         }
+    }
+
+    // 다리 건너기
+    public static void passByBridge(int out){
+        cntEndTruck++;
+        sumWeight -= out;
+    }
+
+    // 트럭인가?
+    public static boolean isTruck(int out){
+        return out != 0;
     }
 
     // 다리가 버틸 수 있는 무게가 L보다 큰가?
