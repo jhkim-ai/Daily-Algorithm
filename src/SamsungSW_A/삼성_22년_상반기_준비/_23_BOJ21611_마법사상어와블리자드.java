@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
+// 63% 에서 틀리는 경우는 모두가 0 일 때
 public class _23_BOJ21611_마법사상어와블리자드 {
 
     private static final int[] dy = {-1, 1, 0, 0};
