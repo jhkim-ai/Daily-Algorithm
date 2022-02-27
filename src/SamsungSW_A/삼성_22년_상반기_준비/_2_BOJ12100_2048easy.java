@@ -54,8 +54,7 @@ public class _2_BOJ12100_2048easy {
     public static void move(int d, int[][] copyMap){ // 0: 상, 1: 하, 2: 좌, 3: 우
         List<Integer> before = new ArrayList<>();
         List<Integer> after = new ArrayList<>();
-        int aSize;
-        int bSize;
+
         if(d == 0){
             for(int x = 0; x < N; ++x){
                 after.clear();
@@ -67,27 +66,7 @@ public class _2_BOJ12100_2048easy {
                     before.add(val);
                 }
 
-                bSize = before.size();
-
-                for(int y = 0; y < bSize; ++y){
-                    int val = before.get(y);
-                    if(y == bSize-1){
-                        after.add(val);
-                        continue;
-                    }
-
-                    if(val == before.get(y+1)){
-                        after.add(val * 2);
-                        ++y;
-                    } else {
-                        after.add(val);
-                    }
-                }
-
-                aSize = N - after.size();
-                for(int i = 0; i < aSize; ++i){
-                    after.add(0);
-                }
+                after = setNewArray(before);
 
                 for(int y = 0; y < N; ++y){
                     copyMap[y][x] = after.get(y);
@@ -104,27 +83,7 @@ public class _2_BOJ12100_2048easy {
                     before.add(val);
                 }
 
-                bSize = before.size();
-
-                for(int y = 0; y < bSize; ++y){
-                    int val = before.get(y);
-                    if(y == bSize-1){
-                        after.add(val);
-                        continue;
-                    }
-
-                    if(val == before.get(y+1)){
-                        after.add(val * 2);
-                        ++y;
-                    } else {
-                        after.add(val);
-                    }
-                }
-
-                aSize = N - after.size();
-                for(int i = 0; i < aSize; ++i){
-                    after.add(0);
-                }
+                after = setNewArray(before);
 
                 for(int y = N-1; y >= 0; --y){
                     copyMap[y][x] = after.get(N-1-y);
@@ -141,27 +100,7 @@ public class _2_BOJ12100_2048easy {
                     before.add(val);
                 }
 
-                bSize = before.size();
-
-                for(int x = 0; x < bSize; ++x){
-                    int val = before.get(x);
-                    if(x == bSize-1){
-                        after.add(val);
-                        continue;
-                    }
-
-                    if(val == before.get(x+1)){
-                        after.add(val * 2);
-                        ++x;
-                    } else {
-                        after.add(val);
-                    }
-                }
-
-                aSize = N - after.size();
-                for(int i = 0; i < aSize; ++i){
-                    after.add(0);
-                }
+                after = setNewArray(before);
 
                 for(int x = 0; x < N; ++x){
                     copyMap[y][x] = after.get(x);
@@ -178,33 +117,39 @@ public class _2_BOJ12100_2048easy {
                     before.add(val);
                 }
 
-                bSize = before.size();
-
-                for(int x = 0; x < bSize; ++x){
-                    int val = before.get(x);
-                    if(x == bSize-1){
-                        after.add(val);
-                        continue;
-                    }
-
-                    if(val == before.get(x+1)){
-                        after.add(val * 2);
-                        ++x;
-                    } else {
-                        after.add(val);
-                    }
-                }
-
-                aSize = N - after.size();
-                for(int i = 0; i < aSize; ++i){
-                    after.add(0);
-                }
+                after = setNewArray(before);
 
                 for(int x = N-1; x >= 0; --x){
                     copyMap[y][x] = after.get(N-1-x);
                 }
             }
         }
+    }
+
+    public static List<Integer> setNewArray(List<Integer> before){
+        List<Integer> after = new ArrayList<>();
+        int bSize = before.size();
+        for(int i = 0; i < bSize; ++i){
+            int val = before.get(i);
+            if(i == bSize-1){
+                after.add(val);
+                continue;
+            }
+
+            if(val == before.get(i+1)){
+                after.add(val * 2);
+                ++i;
+            } else {
+                after.add(val);
+            }
+        }
+
+        int aSize = N - after.size();
+        for(int i = 0; i < aSize; ++i){
+            after.add(0);
+        }
+
+        return after;
     }
 
     public static int getMaxVal(int[][] copyMap){
