@@ -70,7 +70,7 @@ public class _1_BOJ13460_구슬탈출2 {
             for(int s = 0; s < size; ++s){
                 Point now = q.poll();
 
-                for(int d = 0; d < 4; ++d){
+                for(int d = 0; d < 4; ++d){           // 각 방향마다(상, 우, 하, 좌)
                     int order = setOrder(d, now);     // 공의 움직일 순서 구하기
                     Point newP = move(d, order, now); // 공 움직이기
 
