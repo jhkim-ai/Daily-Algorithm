@@ -6,6 +6,7 @@ public class Lower_Bound {
 
     public static void main(String[] args) throws Exception {
 
+        // Lower Bound
         // K 값 이상인 값의 처음 위치를 찾을 때
         int k = 17;
         int left = 0;
