@@ -3,51 +3,51 @@ import java.util.*;
 
 public class Main {
 
-    private static int N, idx, M;
-    public static void main(String[] args) {
+    private static int N, back;
+    private static Queue<Integer> q;
 
-        N = 5;
-        M = 3;
-        idx = 1;
-//        permutation(N, new int[N], new boolean[N]);
-//        combination(M, new int[M], 0);
-        powerSet();
-    }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
 
-    public static void permutation(int cnt, int[] selected, boolean[] visited){
-        if(cnt == 0){
-            System.out.println(idx++ +" " + Arrays.toString(selected));
-            return;
-        }
+        N = Integer.parseInt(br.readLine());
+        q = new LinkedList<>();
+        back = -1;
+        while (N-- > 0) {
+            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+            String command = st.nextToken();
 
-        for (int i = 0; i < N; i++) {
-                selected[selected.length - cnt] = i;
-                permutation(cnt-1, selected, visited);
-
-        }
-    }
-
-    public static void combination(int cnt, int[] selected, int startIdx){
-        if(cnt == 0){
-            System.out.println(idx++ + " " + Arrays.toString(selected));
-            return;
-        }
-        for (int i = startIdx; i < N; i++) {
-            selected[selected.length - cnt] = i;
-            combination(cnt-1, selected, i);
-        }
-    }
-
-    public static void powerSet(){
-        List<Integer> list = new ArrayList<>();
-        for(int i = 1; i < (1 << N); ++i){
-            list.clear();
-            for(int j = 0; j < N; ++j){
-                if((i & (1 << j)) > 0){
-                    list.add(j);
+            if(command.equals("push")){
+                int num = Integer.parseInt(st.nextToken());
+                q.offer(num);
+                back = num;
+            } else if(command.equals("front")){
+                if(q.size() > 0){
+                    sb.append(q.peek()).append("\n");
+                } else {
+                    sb.append(-1).append("\n");
+                }
+            } else if(command.equals("back")){
+                sb.append(back).append("\n");
+            } else if(command.equals("empty")){
+                if(q.isEmpty()){
+                    sb.append(1).append("\n");
+                } else {
+                    sb.append(0).append("\n");
+                }
+            } else if(command.equals("size")){
+                sb.append(q.size()).append("\n");
+            } else if(command.equals("pop")){
+                if(q.size() > 0) {
+                    sb.append(q.poll()).append("\n");
+                    if(q.size() == 0){
+                        back = -1;
+                    }
+                } else {
+                    sb.append(-1).append("\n");
                 }
             }
-            System.out.println(idx++ + " " + list);
         }
+        System.out.println(sb);
     }
 }
