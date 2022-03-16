@@ -14,8 +14,8 @@ public class Lower_Bound {
         while(left < right){
             int mid = (left + right) / 2;
 
-            if(arr[mid] >= k) right = mid;
-            else left = mid + 1;
+            if(arr[mid] < k) left = mid + 1;
+            else right = mid;
         }
 
         System.out.println(right);
