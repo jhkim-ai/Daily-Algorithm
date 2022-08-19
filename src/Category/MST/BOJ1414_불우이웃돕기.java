@@ -70,8 +70,6 @@ public class BOJ1414_불우이웃돕기 {
     }
 
     public static boolean union(int a, int b){
-        if(a == b) return false;
-
         a = find(a);
         b = find(b);
 
