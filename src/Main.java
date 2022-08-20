@@ -3,46 +3,47 @@ import java.util.*;
 
 public class Main {
 
-    private static int N, S, ans;
-    private static int[] arr;
+    public static void main(String[] args) {
+        Point a = new Point("김재현", "123");
+        Point b = new Point("김재현", "123");
+        Point c = new Point();
+        Set<Point> set = new HashSet<>();
+        set.add(a);
+        set.add(b);
+        set.add(c);
+        System.out.println(set.size());
 
-    // 1806 부분합
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+        System.out.println("김재현".hashCode());
+    }
 
-        N = Integer.parseInt(st.nextToken());
-        S = Integer.parseInt(st.nextToken());
-        arr = new int[N];
+    public static class Point {
+        String y;
+        String x;
 
-        st = new StringTokenizer(br.readLine(), " ");
-        for (int i = 0; i < N; ++i) {
-            arr[i] = Integer.parseInt(st.nextToken());
+        public Point(){
+
         }
 
-        ans = Integer.MAX_VALUE;
-        int left = 0;
-        int right = 0;
-        int sum = 0;
+        public Point(String y, String x){
+            this.y = y;
+            this.x = x;
+        }
 
-        // S 이상이 되는 최소의 길이
-        while (true) {
-            if (sum >= S) {
-                ans = Math.min(ans, right - left);
-                sum -= arr[left++];
-            } else if (right == N) {
-                break;
-            } else {
-                sum += arr[right++];
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
             }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Point point = (Point) o;
+            return Objects.equals(y, point.y) && Objects.equals(x, point.x);
         }
 
-        if (ans > 100000) {
-            ans = 0;
+        @Override
+        public int hashCode() {
+            return Objects.hash(y, x);
         }
-
-        System.out.println(ans);
     }
 }
-
-

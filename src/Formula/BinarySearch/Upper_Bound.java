@@ -6,6 +6,7 @@ public class Upper_Bound {
 
     public static void main(String[] args) throws Exception {
 
+        // Upper Bound
         // K 값 초과인 값의 처음 위치를 구할 때
         int k = 17;
         int left = 0;
