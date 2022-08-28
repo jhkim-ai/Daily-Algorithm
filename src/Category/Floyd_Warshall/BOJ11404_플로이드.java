@@ -1,4 +1,4 @@
-package Category;
+package Category.Floyd_Warshall;
 
 import java.io.BufferedReader;
 import java.io.IOException;
