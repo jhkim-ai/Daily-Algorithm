@@ -9,7 +9,7 @@ public class BOJ10999_구간합구하기2 {
 
     private static int N, M, K;
     private static int height, cntLeafNode;
-    private static long[] input, tree;
+    private static long[] arr, tree, lazy;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,52 +20,84 @@ public class BOJ10999_구간합구하기2 {
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
-        input = new long[N + 1];
+        arr = new long[N + 1];
         for(int idx = 1; idx <= N; ++idx) {
-            input[idx] = Long.parseLong(br.readLine());
+            arr[idx] = Long.parseLong(br.readLine());
         }
 
         setTreeInfo();
         makeSegmentTree(1, 1, cntLeafNode);
 
         int cnt = M + K;
-        while(cnt-- > 0) {
+        while(cnt-- > 0){
             st = new StringTokenizer(br.readLine(), " ");
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
 
-            if(a == 1) {
+            if(a == 1){
                 long d = Long.parseLong(st.nextToken());
                 update(1, 1, cntLeafNode, b, c, d);
             } else {
-                sb.append(getPartialSum(1, 1, cntLeafNode, b, c));
-                sb.append("\n");
+                sb.append(query(1, 1, cntLeafNode, b, c)).append("\n");
             }
         }
+
         System.out.println(sb.toString());
     }
 
-    public static void setTreeInfo() {
-        height = 1;
-        cntLeafNode = 1;
+    public static void propagate(int node, int left, int right) {
+        if(lazy[node] == 0) return;
 
-        while(true) {
-            if(N <= cntLeafNode) {
-                tree = new long[1 << height];
-                return;
-            }
-            height++;
-            cntLeafNode *= 2;
+        tree[node] += (right - left + 1) * lazy[node];
+        if(left != right) {
+            lazy[node * 2] += lazy[node];
+            lazy[node * 2 + 1] += lazy[node];
         }
+        lazy[node] =0;
+    }
+
+    public static void update(int node, int left, int right, int tLeft, int tRight, long diff) {
+
+        propagate(node, left, right);
+
+        if(left > tRight || right < tLeft) return;
+        if(tLeft <= left && right <= tRight) {
+            tree[node] += (right - left + 1) * diff;
+            if(left != right){
+                lazy[node * 2] += diff;
+                lazy[node * 2 + 1] += diff;
+            }
+            return;
+        }
+
+        int mid = (left + right) / 2;
+        update(node * 2, left, mid, tLeft, tRight, diff);
+        update(node * 2 + 1, mid + 1, right, tLeft, tRight, diff);
+
+        tree[node] = tree[node * 2] + tree[node * 2 + 1];
+    }
+
+    public static long query(int node, int left, int right, int tLeft, int tRight) {
+
+        propagate(node, left, right);
+
+        if(left > tRight || right < tLeft) return 0;
+        if(tLeft <= left && right <= tRight) return tree[node];
+
+        int mid = (left + right) / 2;
+        long sum = query(node * 2, left, mid, tLeft, tRight);
+        sum += query(node * 2 + 1, mid + 1, right, tLeft, tRight);
+
+        return sum;
     }
 
     public static long makeSegmentTree(int node, int left, int right) {
         if(left == right) {
             if(left <= N) {
-                return tree[node] = input[left];
+                return tree[node] = arr[left];
             }
-            return 0;
+            return tree[node] = 0;
         }
 
         int mid = (left + right) / 2;
@@ -73,28 +105,16 @@ public class BOJ10999_구간합구하기2 {
         return tree[node] += makeSegmentTree(node * 2 + 1, mid + 1, right);
     }
 
-    public static long update(int node, int left, int right, int tLeft, int tRight, long diff) {
+    public static void setTreeInfo() {
+        height = 1;
+        cntLeafNode = 1;
 
-        if(left > tRight || right < tLeft) return tree[node];
-        if(left == right) return tree[node] += diff;
-
-        int mid = (left + right) / 2;
-        tree[node] = update(node * 2, left, mid, tLeft, tRight, diff);
-        return tree[node] += update(node * 2 + 1, mid + 1, right, tLeft, tRight, diff);
-    }
-
-    public static long getPartialSum(int node, int left, int right, int tLeft, int tRight) {
-        if(left > tRight || right < tLeft) {
-            return 0;
-        }
-        if(tLeft <= left && right <= tRight) {
-            return tree[node];
+        while(cntLeafNode <= N) {
+            cntLeafNode = cntLeafNode << 1;
+            ++height;
         }
 
-        int mid = (left + right) / 2;
-        long sum = getPartialSum(node * 2, left, mid, tLeft, tRight);
-        sum += getPartialSum(node * 2 + 1, mid + 1, right, tLeft, tRight);
-
-        return sum;
+        tree = new long[1 << height];
+        lazy = new long[1 << height];
     }
 }
