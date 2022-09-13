@@ -35,8 +35,6 @@ public class BOJ23291_어항정리 {
         while(true){
             ++ans;
             addFish();
-            System.out.println("물고기 추가");
-            print(map);
 
             int cnt = 2;
             while (true) {
@@ -45,28 +43,16 @@ public class BOJ23291_어항정리 {
             }
 
             resetCntFish();
-            System.out.println("물고기 조절");
-            print(map);
             setLine();
-            System.out.println("줄서기");
-            print(map);
 
             firstFold(N / 2);
-            System.out.println("한 번 접기");
-            print(map);
             secondFold(N / 4);
-            System.out.println("두 번 접기");
-            print(map);
             resetCntFish();
-            System.out.println("물고기 조절");
-            print(map);
             setLine();
-            System.out.println("줄서기");
-            print(map);
 
-        if (findFish()) break;
+            if (findFish()) break;
         }
-        print(map);
+
         System.out.println(ans);
     }
     public static void secondFold(int len) {
@@ -215,7 +201,6 @@ public class BOJ23291_어항정리 {
 
     public static void setLine() {
         List<Integer> tmpList = new ArrayList<>();
-        int[][] tmpMap = new int[N][N];
 
         for(int x = 0; x < N; ++x) {
             for(int y = N-1; y >= 0; --y) {
@@ -250,15 +235,4 @@ public class BOJ23291_어항정리 {
     public static boolean isIn(int y, int x) {
         return y >= 0 && x >= 0 && y < N && x < N;
     }
-
-    public static void print(int[][] map) {
-        System.out.println("==================");
-        for(int y = 0; y < N; ++y) {
-            System.out.println(Arrays.toString(map[y]));
-        }
-        System.out.println("==================");
-    }
-
-    public static String input = "8 7\n" +
-            "5 2 3 14 9 2 11 8";
 }
