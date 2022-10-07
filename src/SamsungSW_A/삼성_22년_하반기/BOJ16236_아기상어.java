@@ -44,7 +44,7 @@ public class BOJ16236_아기상어 {
         while(true) {
 
             ans += bfs();
-            System.out.println("end: " + ans);
+
             if(pq.size() == 0) return;
 
             Fish next = pq.peek();
@@ -62,7 +62,7 @@ public class BOJ16236_아기상어 {
             pq.clear();
         }
     }
-    static int idx = 0;
+
     public static int bfs() {
         int time = 0;
         Queue<int[]> q = new LinkedList<>();
@@ -74,7 +74,7 @@ public class BOJ16236_아기상어 {
         while(!q.isEmpty()) {
             ++time;
             int size = q.size();
-            System.out.println(time);
+
             for(int s = 0; s < size; ++s) {
                 int[] now = q.poll();
                 for(int d = 0; d < 4; ++d) {
@@ -89,12 +89,9 @@ public class BOJ16236_아기상어 {
 
                     visited[ny][nx] = true;
                     q.offer(new int[]{ny, nx});
-//                    print(visited);
-//                    ++idx;
-//                    if(idx == 50) System.exit(0);
                 }
             }
-//            System.out.println(pq);
+
             if(pq.size() > 0) return time;
         }
 
@@ -122,22 +119,5 @@ public class BOJ16236_아기상어 {
             if(this.y == f.y) return Integer.compare(this.x, f.x);
             return Integer.compare(this.y, f.y);
         }
-
-        @Override
-        public String toString() {
-            return "y: " + y + ", x: " + x + ", map[y][x]: " + map[y][x];
-        }
-    }
-
-    public static void print(boolean[][] visited) {
-        System.out.println("==========================");
-        for(int y = 0; y < N; ++y){
-            for(int x = 0; x < N; ++x) {
-                if(visited[y][x]) System.out.print("1");
-                else System.out.print("0");
-            }
-            System.out.println();
-        }
-        System.out.println("==========================");
     }
 }
