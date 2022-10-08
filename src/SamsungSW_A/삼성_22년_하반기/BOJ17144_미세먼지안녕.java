@@ -35,8 +35,17 @@ public class BOJ17144_미세먼지안녕 {
         while(T-- > 0) {
             spread();
             blow();
-            print(map);
         }
+
+        int ans = 0;
+        for(int y = 0; y < N; ++y) {
+            for(int x = 0; x < M; ++x) {
+                if(map[y][x] <= 0) continue;
+                ans += map[y][x];
+            }
+        }
+
+        System.out.println(ans);
     }
 
     public static void spread() {
@@ -66,13 +75,13 @@ public class BOJ17144_미세먼지안녕 {
     }
 
     public static void blow() {
-        counterClockwise(filter[0], filter[1]);
-        clockwise(filter[0] + 1, filter[1]);
+        counterClockwise(filter[0]-1, filter[1]);
+        clockwise(filter[0], filter[1]);
     }
 
     public static void counterClockwise(int y, int x) {
-        for(int i = y-1; y > 0; --y) {
-            map[i][0] = map[i-1][0];
+        for(int i = y-1; i > 0; --i) {
+            map[i][x] = map[i-1][x];
         }
 
         for(int i = 0; i < M-1; ++i) {
@@ -80,11 +89,11 @@ public class BOJ17144_미세먼지안녕 {
         }
 
         for(int i = 0; i < y; ++i) {
-            map[M-1][i] = map[M-1][i+1];
+            map[i][M-1] = map[i+1][M-1];
         }
 
-        for(int i = M-1; i > 1; --i) {
-            map[N-1][i] = map[N-1][i-1];
+        for(int i = M-1; i > x+1; --i) {
+            map[y][i] = map[y][i-1];
         }
 
         map[y][1] = 0;
@@ -92,18 +101,18 @@ public class BOJ17144_미세먼지안녕 {
 
     public static void clockwise(int y, int x) {
         for(int i = y+1; i < N-1; ++i) {
-            map[i][0] = map[i+1][0];
+            map[i][x] = map[i+1][x];
         }
 
         for(int i = 0; i < M-1; ++i) {
-            map[0][i] = map[0][i+1];
+            map[N-1][i] = map[N-1][i+1];
         }
 
         for(int i = N-1; i > y; --i) {
-            map[M-1][i] = map[M-1][i-1];
+            map[i][M-1] = map[i-1][M-1];
         }
 
-        for(int i = M-1; i > 0; --i) {
+        for(int i = M-1; i > x+1; --i) {
             map[y][i] = map[y][i-1];
         }
 
