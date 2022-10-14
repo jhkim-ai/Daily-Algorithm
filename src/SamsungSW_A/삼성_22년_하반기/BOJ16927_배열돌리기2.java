@@ -3,15 +3,18 @@ package SamsungSW_A.삼성_22년_하반기;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class BOJ16926_배열돌리기1 {
+public class BOJ16927_배열돌리기2 {
 
     private static final int[] dy = {0, 1, 0, -1};
     private static final int[] dx = {1, 0, -1, 0};
 
-    private static int N, M, R;
+    private static int N, M, R, cnt;
     private static int[][] map;
+
+    private static Stack<Integer> stack;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -21,6 +24,8 @@ public class BOJ16926_배열돌리기1 {
         M = Integer.parseInt(st.nextToken());
         R = Integer.parseInt(st.nextToken());
         map = new int[N][M];
+        stack = new Stack<>();
+        cnt = Math.min(N, M) / 2;
 
         for (int y = 0; y < N; ++y) {
             st = new StringTokenizer(br.readLine(), " ");
@@ -29,9 +34,13 @@ public class BOJ16926_배열돌리기1 {
             }
         }
 
-        while (R-- > 0) {
-            rotate();
+        for (int i = cnt - 1; i >= 0; --i) {
+            int a = (N - i * 2) * (M - i * 2);
+            int b = (N - (i + 1) * 2) * (M - (i + 1) * 2);
+            stack.add(a - b);
         }
+
+        rotate();
 
         StringBuilder sb = new StringBuilder();
         for (int y = 0; y < N; ++y) {
@@ -45,33 +54,34 @@ public class BOJ16926_배열돌리기1 {
     }
 
     public static void rotate() {
-        int cnt = Math.min(N, M) / 2;
-
         for (int i = 0; i < cnt; ++i) {
-            int y = i;
-            int x = i;
-            int d = 0;
-            int tmp = map[y][x];
+            int idx = R % stack.pop();
+            while (idx-- > 0) {
+                int y = i;
+                int x = i;
+                int d = 0;
+                int tmp = map[y][x];
 
-            while (true) {
-                int ny = y + dy[d];
-                int nx = x + dx[d];
+                while (true) {
+                    int ny = y + dy[d];
+                    int nx = x + dx[d];
 
-                if (!isIn(i, ny, nx)) {
-                    d = (d + 1) % 4;
-                    continue;
+                    if (!isIn(i, ny, nx)) {
+                        d = (d + 1) % 4;
+                        continue;
+                    }
+
+                    if (ny == i && nx == i) {
+                        break;
+                    }
+
+                    map[y][x] = map[ny][nx];
+                    y = ny;
+                    x = nx;
                 }
 
-                if (ny == i && nx == i) {
-                    break;
-                }
-
-                map[y][x] = map[ny][nx];
-                y = ny;
-                x = nx;
+                map[i + 1][i] = tmp;
             }
-
-            map[i + 1][i] = tmp;
         }
     }
 
