@@ -1,0 +1,45 @@
+package Category.Dynamic_Programming;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class BOJ12865_평범한배낭 {
+
+    private static int N, K;
+
+    private static int[] W;
+    private static int[] V;
+    private static int[] dp;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+
+        W = new int[N + 1];
+        V = new int[N + 1];
+        dp = new int[K + 1];
+
+        for (int i = 1; i <= N; ++i) {
+            st = new StringTokenizer(br.readLine(), " ");
+            int w = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+
+            W[i] = w;
+            V[i] = v;
+        }
+
+        for (int i = 1; i <= N; ++i) {
+            for (int k = K; k >= 0; --k) {
+                if (k - W[i] < 0) break;
+                dp[k] = Math.max(dp[k], dp[k - W[i]] + V[i]);
+            }
+        }
+
+        System.out.println(dp[K]);
+    }
+}
